@@ -1,0 +1,1856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PaedNeuroCompanion</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+:root{
+  /* — Primary teal-slate palette — */
+  --teal:#0D9488;--teal-d:#0F766E;--teal-p:#F0FDFA;--teal-l:#99F6E4;--teal-m:#CCFBF1;
+  --slate:#334155;--slate-d:#1E293B;--slate-p:#F8FAFC;--slate-l:#CBD5E1;--slate-m:#E2E8F0;
+  /* — Accent colours — */
+  --amber:#D97706;--amber-p:#FFFBEB;--amber-l:#FDE68A;
+  --rose:#E11D48;--rose-p:#FFF1F2;--rose-l:#FECDD3;
+  --violet:#7C3AED;--violet-p:#F5F3FF;--violet-l:#DDD6FE;
+  --emerald:#059669;--emerald-p:#ECFDF5;--emerald-l:#A7F3D0;
+  /* — Surface & ink — */
+  --bg:#F8FAFC;--surface:#FFFFFF;--surface-2:#F1F5F9;
+  --border:#E2E8F0;--border-d:#CBD5E1;
+  --ink:#0F172A;--ink-m:#334155;--ink-s:#64748B;--ink-f:#94A3B8;
+  --white:#FFFFFF;
+  --r:8px;--rl:12px;--rxl:16px;
+  --sh:0 1px 8px rgba(15,23,42,.06),0 0 0 1px rgba(15,23,42,.04);
+  --sh-lg:0 4px 24px rgba(15,23,42,.1),0 0 0 1px rgba(15,23,42,.04);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+body{font-family:'DM Sans',-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;font-size:14px;line-height:1.6}
+.hdr{position:sticky;top:0;z-index:100;background:linear-gradient(135deg,var(--slate-d) 0%,#0F766E 60%,#0D9488 100%);box-shadow:0 2px 16px rgba(15,23,42,.18)}
+.hdr-in{max-width:960px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;justify-content:space-between}
+.hdr-brand{display:flex;align-items:center;gap:10px}
+.hdr-icon{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center}
+.hdr-name{color:#fff;font-size:16px;font-weight:800;letter-spacing:-.3px}
+.hdr-tag{color:rgba(255,255,255,.6);font-size:10.5px;font-weight:500}
+.hdr-right{display:flex;align-items:center;gap:10px}
+.hdr-pill{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.8);font-size:10px;font-weight:600;padding:4px 11px;border-radius:18px}
+.user-chip{display:flex;align-items:center;gap:7px;padding:5px 12px 5px 6px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:20px;cursor:pointer}
+.user-av{width:24px;height:24px;border-radius:50%;background:var(--amber);color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.user-name{color:rgba(255,255,255,.9);font-size:11.5px;font-weight:600}
+.btn-lo{font-size:11px;color:rgba(255,255,255,.6);cursor:pointer;font-weight:600;padding:3px 8px;border:1px solid rgba(255,255,255,.2);border-radius:6px;background:transparent;font-family:inherit}
+.safety{background:linear-gradient(90deg,#FFFBEF,#FFF8E1);border-bottom:1.5px solid #F0D060;padding:8px 24px;text-align:center;font-size:11.5px;font-weight:600;color:#7A5800}
+.safety b{color:var(--rose)}
+.app{max-width:960px;margin:0 auto;padding:22px 20px 60px}
+/* LOGIN */
+.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(155deg,var(--slate-d) 0%,#0F766E 55%,#14B8A6 100%);padding:20px}
+.login-card{background:var(--surface);border-radius:var(--rxl);padding:44px 40px;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(26,39,51,.3);text-align:center}
+.login-logo{width:64px;height:64px;border-radius:18px;background:linear-gradient(135deg,var(--slate-d),var(--teal-d));display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+.login-title{font-size:22px;font-weight:900;color:var(--ink);letter-spacing:-.5px;margin-bottom:6px}
+.login-sub{font-size:12px;color:var(--ink-f);margin-bottom:28px;line-height:1.65}
+.btn-google{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;padding:13px 20px;border:1.5px solid var(--border-d);border-radius:var(--r);background:var(--surface);color:var(--ink);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;margin-bottom:12px}
+.btn-google:hover{background:var(--bg);box-shadow:var(--sh)}
+.login-disc{font-size:10.5px;color:var(--ink-f);line-height:1.6;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
+.login-disc b{color:var(--rose)}
+/* UPLOAD */
+.upload-banner{background:linear-gradient(135deg,var(--slate-d),var(--teal-d));border-radius:var(--rl);padding:14px 20px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:16px;box-shadow:var(--sh-lg)}
+.upload-left{display:flex;align-items:center;gap:14px}
+.upload-icon{width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.upload-title{color:#fff;font-size:14px;font-weight:800}
+.upload-sub{color:rgba(255,255,255,.65);font-size:11px;margin-top:1px}
+.btn-upload{padding:9px 18px;border-radius:var(--r);background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);color:#fff;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.btn-upload:hover{background:rgba(255,255,255,.25)}
+/* STEPPER */
+.stepper{background:var(--surface);border-radius:var(--rl);border:1px solid var(--border);padding:14px 18px;margin-bottom:16px;box-shadow:var(--sh)}
+.strack{display:flex;align-items:center}
+.snode{display:flex;flex-direction:column;align-items:center;gap:4px}
+.sdot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;transition:all .2s;border:2px solid var(--ink-f);background:var(--surface);color:var(--ink-s);cursor:pointer;user-select:none}
+.sdot.done{background:var(--emerald);border-color:var(--emerald);color:#fff}
+.sdot.active{background:var(--teal-d);border-color:var(--teal-d);color:#fff;box-shadow:0 0 0 4px rgba(13,148,136,.15)}
+.slabel{font-size:9.5px;font-weight:600;color:var(--ink-s);white-space:nowrap;display:none}
+.slabel.active{color:var(--teal-d);font-weight:700}
+.slabel.done{color:var(--emerald)}
+.sline{flex:1;height:2px;background:var(--border);position:relative;top:-12px}
+.sline.done{background:var(--emerald)}
+@media(min-width:560px){.slabel{display:block}}
+@media(max-width:640px){.g2,.g3,.g4{grid-template-columns:1fr}.rv-grid{grid-template-columns:1fr 1fr}.card{padding:16px 14px}.hdr-pill{display:none}.upload-banner{flex-direction:column;gap:12px}.stbl{min-width:520px}}
+/* CARD */
+.card{background:var(--surface);border-radius:var(--rxl);border:1px solid var(--border);padding:20px 22px;margin-bottom:12px;box-shadow:var(--sh)}
+.sec-hdr{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:12px;border-bottom:1.5px solid var(--border)}
+.sec-ico{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--teal-p),var(--teal-m));display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.sec-title{font-size:15px;font-weight:700;color:var(--ink);letter-spacing:-.2px}
+.sec-sub{font-size:11px;color:var(--ink-s);margin-top:1px}
+.ss{display:flex;align-items:center;gap:10px;margin:16px 0 10px}
+.ss-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--teal-d);white-space:nowrap}
+.ss::after{content:'';flex:1;height:1px;background:var(--border)}
+/* GRID */
+.g1{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:10px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:9px;margin-bottom:10px}
+/* FIELD */
+.fld{display:flex;flex-direction:column;gap:4px}
+.flabel{font-size:11px;font-weight:600;color:var(--ink-m);letter-spacing:.1px}
+.flabel .req{color:var(--rose);margin-left:2px}
+.flabel .opt{font-size:10px;font-weight:400;color:var(--ink-f);font-style:italic;margin-left:4px}
+/* NATIVE INPUTS */
+input,select,textarea{width:100%;padding:7px 10px;border:1.5px solid var(--border-d);border-radius:var(--r);font-family:'DM Sans',inherit;font-size:13px;color:var(--ink);background:var(--surface);transition:border-color .15s,box-shadow .15s;line-height:1.5;-webkit-appearance:none}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--teal-d);box-shadow:0 0 0 3px rgba(13,148,136,.12)}
+input[type=number]::-webkit-inner-spin-button{opacity:1}
+input::placeholder,textarea::placeholder{color:var(--ink-f)}
+textarea{resize:vertical;min-height:60px}
+select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748B' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+.req-border{border-color:var(--rose-l) !important}
+.irow{display:flex;gap:8px}
+.irow input{flex:1;min-width:0}
+.irow select{flex:0 0 110px}
+/* PILLS */
+.pg{display:flex;flex-wrap:wrap;gap:5px}
+.pill{padding:4px 11px;border:1.5px solid var(--border-d);border-radius:20px;font-size:11.5px;font-weight:500;cursor:pointer;user-select:none;transition:all .15s;color:var(--ink-s);background:var(--surface);white-space:nowrap}
+.pill:hover{border-color:var(--teal-d);color:var(--teal-d);background:var(--teal-p)}
+.pill.on{background:var(--teal-d);color:#fff;border-color:transparent;box-shadow:0 1px 6px rgba(13,148,136,.3)}
+.pill.warn{background:var(--rose);color:#fff;border-color:transparent;box-shadow:0 1px 5px rgba(225,29,72,.25)}
+/* NOTES */
+.note{padding:9px 13px;border-radius:var(--r);border-left:3px solid var(--teal-d);background:var(--teal-p);font-size:12px;color:var(--ink-m);line-height:1.6;margin-bottom:10px}
+.note-a{border-left-color:var(--amber);background:var(--amber-p)}
+.note-r{border-left-color:var(--rose);background:var(--rose-p)}
+.note-g{border-left-color:var(--emerald);background:var(--emerald-p)}
+/* SYMPTOM TABLE */
+.stw{background:var(--teal-p);border-radius:var(--rl);border:1px solid var(--teal-m);padding:12px;margin-bottom:10px;overflow-x:auto}
+.stbl{width:100%;border-collapse:separate;border-spacing:0 4px;font-size:12.5px;min-width:680px}
+.stbl th{padding:0 8px 5px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--teal-d);text-align:left;white-space:nowrap}
+.stbl td{padding:2px 4px;vertical-align:middle}
+.stbl input,.stbl select{padding:6px 8px;font-size:12.5px;border:1.5px solid var(--border-d);border-radius:7px;background:var(--surface)}
+.btn-add{padding:6px 13px;border:1.5px dashed var(--teal-l);border-radius:7px;background:transparent;color:var(--teal-d);font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px;margin-top:7px;font-family:inherit}
+.btn-add:hover{background:var(--teal-p)}
+.btn-del{width:24px;height:24px;border-radius:6px;border:1.5px solid var(--rose-l);background:var(--rose-p);color:var(--rose);font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit;flex-shrink:0}
+.btn-del:hover{background:var(--rose);color:#fff}
+/* NAV */
+.fnav{display:flex;justify-content:space-between;align-items:center;margin-top:20px;padding-top:16px;border-top:1.5px solid var(--border)}
+.btn-back{padding:9px 20px;border-radius:var(--r);background:var(--surface);color:var(--teal-d);border:1.5px solid var(--teal-m);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
+.btn-back:hover{background:var(--teal-p);border-color:var(--teal-d)}
+.btn-next{padding:9px 24px;border-radius:var(--r);background:var(--teal-d);color:#fff;border:none;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 2px 10px rgba(13,148,136,.25);transition:all .15s}
+.btn-next:hover{background:var(--teal);transform:translateY(-1px);box-shadow:0 4px 16px rgba(13,148,136,.35)}
+.btn-run{padding:10px 28px;border-radius:var(--rl);background:linear-gradient(135deg,var(--slate-d),var(--teal-d));color:#fff;border:none;font-family:inherit;font-size:13.5px;font-weight:700;cursor:pointer;box-shadow:0 3px 14px rgba(15,23,42,.2);transition:all .15s}
+.btn-run:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(15,23,42,.28)}
+/* REVIEW */
+.rv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.rv-tile{background:var(--teal-p);border:1px solid var(--teal-m);border-radius:var(--r);padding:9px 12px}
+.rv-tile .rvl{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--teal-d);margin-bottom:2px}
+.rv-tile .rvv{font-size:13px;color:var(--ink);font-weight:500}
+.api-box{background:linear-gradient(135deg,var(--amber-p),var(--surface));border:1.5px dashed var(--amber-l);border-radius:var(--rl);padding:14px;margin-top:12px}
+/* RESULTS */
+.ub{border-radius:var(--rl);padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;gap:10px;font-weight:700;font-size:13.5px}
+.ub-e{background:linear-gradient(135deg,#9F1239,var(--rose));color:#fff}
+.ub-u{background:linear-gradient(135deg,#92400E,var(--amber));color:#fff}
+.rhero{background:linear-gradient(140deg,var(--slate-d) 0%,#0F766E 55%,#14B8A6 100%);border-radius:var(--rxl);padding:22px 26px;margin-bottom:14px;box-shadow:var(--sh-lg);color:#fff}
+.rh-row{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
+.rh-title{font-size:18px;font-weight:800;letter-spacing:-.3px}
+.rh-meta{font-size:11px;opacity:.65;margin-top:3px;line-height:1.7}
+.rh-bdg{padding:4px 13px;border-radius:18px;font-size:11.5px;font-weight:700;border:1.5px solid rgba(255,255,255,.3);background:rgba(255,255,255,.12)}
+.loc-box{margin-top:10px;padding:10px 14px;background:rgba(255,255,255,.1);border-radius:9px;font-size:12.5px;color:rgba(255,255,255,.92);line-height:1.6}
+.loc-lbl{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;opacity:.65;margin-bottom:3px}
+.conf{display:inline-block;padding:2px 8px;border-radius:5px;font-size:10px;font-weight:700;margin-left:7px}
+.cf-h{background:rgba(5,150,105,.3);color:#6EE7B7}.cf-m{background:rgba(217,119,6,.3);color:#FDE68A}.cf-l{background:rgba(225,29,72,.3);color:#FECDD3}
+.rsec{background:var(--surface);border-radius:var(--rxl);border:1px solid var(--border);padding:18px 22px;margin-bottom:12px;box-shadow:var(--sh)}
+.rtitle{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--teal-d);margin-bottom:11px;padding-bottom:7px;border-bottom:1.5px solid var(--teal-p)}
+.dx{border:1.5px solid var(--border);border-radius:var(--rl);margin-bottom:10px;overflow:hidden}
+.dx:hover{box-shadow:var(--sh);border-color:var(--teal-m)}
+.dx-hd{padding:12px 14px 0;background:linear-gradient(to bottom,var(--teal-p),var(--surface))}
+.dx-top{display:flex;align-items:flex-start;gap:10px}
+.dx-rk{width:26px;height:26px;border-radius:50%;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.rk1{background:linear-gradient(135deg,#9F1239,var(--rose))}.rk2{background:linear-gradient(135deg,var(--amber),#B45309)}.rk3{background:linear-gradient(135deg,var(--teal-d),var(--teal))}.rkn{background:linear-gradient(135deg,var(--violet),#6D28D9)}
+.dx-inf{flex:1}.dx-name{font-size:14.5px;font-weight:700;color:var(--ink);letter-spacing:-.1px}
+.dx-meta{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+.dx-id{font-size:10px;color:var(--ink-s)}
+.dx-cat{font-size:10px;font-weight:600;padding:2px 7px;border-radius:6px}
+.cat-Epileptic{background:#FEF9C3;color:#713F12}.cat-Metabolic{background:var(--violet-p);color:var(--violet)}.cat-Structural{background:var(--teal-p);color:var(--teal-d)}.cat-Neuroimmune{background:var(--emerald-p);color:var(--emerald)}.cat-Infectious{background:var(--rose-p);color:var(--rose)}.cat-Neuromuscular{background:var(--amber-p);color:#92400E}.cat-Vascular{background:var(--rose-p);color:var(--rose)}.cat-Neurodegenerative{background:var(--violet-p);color:var(--violet)}.cat-Syndromic{background:var(--teal-p);color:var(--teal-d)}.cat-Functional{background:var(--slate-m);color:var(--ink-s)}
+.dx-pct-w{display:flex;flex-direction:column;align-items:flex-end;flex-shrink:0}
+.dx-pct{font-size:24px;font-weight:800;color:var(--teal-d);line-height:1;letter-spacing:-1px}
+.dx-rng{font-size:10px;color:var(--ink-s);text-align:right;margin-top:1px}
+.dx-bar-w{padding:8px 14px}.dx-bar{height:5px;background:var(--border);border-radius:3px}.dx-bf{height:5px;border-radius:3px}
+.dx-kf{margin:0 14px 7px;padding:6px 10px;background:var(--violet-p);border-radius:6px;border-left:2px solid var(--violet);font-size:11.5px;color:var(--violet);font-style:italic}
+.dx-body{padding:8px 14px 12px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.dx-for{font-size:12px;color:var(--emerald);line-height:1.65}.dx-ag{font-size:12px;color:var(--rose);line-height:1.65}
+.dx-for b{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;display:block;margin-bottom:4px;color:var(--emerald-l)}
+.dx-ag b{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;display:block;margin-bottom:4px;color:var(--rose-l)}
+.dx-feat{padding:2px 0 2px 8px;border-left:2px solid currentColor;margin-bottom:3px}
+.dx-crit{grid-column:1/-1;margin-top:4px;padding:7px 10px;background:var(--slate-p);border-radius:6px;border-left:2px solid var(--teal-d);font-size:11.5px;color:var(--ink-m)}
+.dx-links{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.dx-links a,.gl a{font-size:11px;color:var(--teal-d);text-decoration:none;font-weight:600;padding:2px 7px;border:1px solid var(--teal-m);border-radius:5px;background:var(--teal-p)}
+.dx-links a:hover,.gl a:hover{background:var(--teal-d);color:#fff}
+.pr{display:inline-block;font-size:9px;font-weight:700;padding:2px 6px;border-radius:5px;text-transform:uppercase;margin-right:4px;letter-spacing:.3px}
+.pr-i{background:#FFF1F2;color:#9F1239}.pr-u{background:var(--amber-p);color:#92400E}.pr-r{background:var(--emerald-p);color:#065F46}
+.inv{padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--rl);margin-bottom:7px;background:var(--slate-p)}
+.inv-n{font-weight:700;font-size:13px;color:var(--ink)}
+.inv-t{font-size:11px;color:var(--teal-d);margin-top:3px;font-weight:600}
+.inv-r{font-size:12px;color:var(--violet);margin-top:4px;line-height:1.5}
+.inv-e{font-size:12px;color:var(--emerald);margin-top:3px}
+.gl{margin-top:5px;display:flex;flex-wrap:wrap;gap:4px}
+.mi{padding:10px 14px;margin-bottom:6px;border-radius:0 var(--rl) var(--rl) 0;border-left:3px solid var(--teal-d);background:var(--teal-p)}
+.mi-i{border-left-color:var(--rose);background:var(--rose-p)}.mi-u{border-left-color:var(--amber);background:var(--amber-p)}
+.mi-n{font-weight:700;font-size:13px;color:var(--ink);margin-bottom:2px}
+.mi-r{font-size:12px;color:var(--ink-m);line-height:1.5;margin-top:2px}
+.mi-m{font-size:12px;color:var(--emerald);margin-top:2px}
+.contra{padding:10px 14px;border-radius:var(--rl);margin-bottom:6px;border-left:3px solid var(--rose);background:var(--rose-p);font-size:12.5px}
+.rf{padding:8px 12px;border-radius:var(--r);margin-bottom:5px;display:flex;align-items:flex-start;gap:8px}
+.rf-i{background:#FFF1F2;border:1px solid #FECDD3}.rf-u{background:var(--amber-p);border:1px solid var(--amber-l)}.rf-r{background:var(--slate-p);border:1px solid var(--border)}
+.ci{padding:8px 12px;background:var(--teal-p);border-radius:var(--r);font-size:12.5px;margin-bottom:5px;border-left:3px solid var(--teal-d)}
+.mdt{padding:7px 12px;background:var(--emerald-p);border-radius:var(--r);font-size:12.5px;margin-bottom:4px;border-left:3px solid var(--emerald)}
+.prose{font-size:13px;line-height:1.75;color:var(--ink-m);white-space:pre-wrap}
+.loader{background:var(--surface);border-radius:var(--rxl);padding:52px 24px;text-align:center;box-shadow:var(--sh-lg);border:1px solid var(--border)}
+.spin{width:38px;height:38px;border:3px solid var(--border);border-top-color:var(--teal-d);border-radius:50%;animation:sp .9s linear infinite;margin:0 auto 14px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.lbar{height:4px;background:var(--border);border-radius:3px;max-width:260px;margin:12px auto 0}
+.lfill{height:4px;border-radius:3px;background:linear-gradient(90deg,var(--teal-d),var(--emerald));transition:width .9s ease}
+hr{border:none;border-top:1px solid var(--border);margin:12px 0}
+.foot{text-align:center;padding:22px 0;font-size:11px;color:var(--ink-s);line-height:1.9}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-page" class="login-page">
+  <div class="login-card">
+    <div class="login-logo">
+      <svg width="48" height="48" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Companion arc — generous open embrace, suggests a protective/supportive presence -->
+        <!-- Intentionally open at the bottom: warmth, not enclosure -->
+        <path d="M26 82 Q8 70 8 50 Q8 20 34 12 Q60 4 76 22 Q92 40 88 62 Q84 76 70 84"
+              fill="none" stroke="white" stroke-width="5.5" stroke-linecap="round" opacity=".45"/>
+        <!-- Child brain — rounded dome, slightly large forehead = paediatric proportions -->
+        <path d="M32 78 Q16 72 14 56 Q12 42 20 32
+                 Q22 24 30 20 Q30 10 40 8 Q50 6 56 12
+                 Q64 6 74 10 Q84 14 86 26
+                 Q94 30 96 44 Q98 58 90 68
+                 Q82 78 66 80 Z"
+              fill="none" stroke="white" stroke-width="3.8" stroke-linejoin="round" opacity=".9"/>
+        <!-- Sulci — 3 organic fold lines give biological brain character -->
+        <path d="M38 14 Q42 24 36 36" stroke="white" stroke-width="1.8" stroke-linecap="round" fill="none" opacity=".45"/>
+        <path d="M56 12 Q62 24 56 40 Q52 52 54 64" stroke="white" stroke-width="1.8" stroke-linecap="round" fill="none" opacity=".45"/>
+        <path d="M74 12 Q80 26 76 42 Q72 56 74 68" stroke="white" stroke-width="1.8" stroke-linecap="round" fill="none" opacity=".4"/>
+        <path d="M20 50 Q30 50 36 60 Q42 70 36 78" stroke="white" stroke-width="1.6" stroke-linecap="round" fill="none" opacity=".38"/>
+        <!-- Neural nodes — 5 solid white dots, unmistakably inside the brain -->
+        <circle cx="42" cy="32" r="5.5" fill="white" opacity=".96"/>
+        <circle cx="60" cy="24" r="5.5" fill="white" opacity=".96"/>
+        <circle cx="78" cy="32" r="5.5" fill="white" opacity=".96"/>
+        <circle cx="72" cy="54" r="5.5" fill="white" opacity=".96"/>
+        <circle cx="48" cy="58" r="4.5" fill="white" opacity=".78"/>
+        <!-- Neural connections — symmetric network, suggests intelligence/computation -->
+        <line x1="42" y1="32" x2="60" y2="24" stroke="white" stroke-width="2" opacity=".62"/>
+        <line x1="60" y1="24" x2="78" y2="32" stroke="white" stroke-width="2" opacity=".62"/>
+        <line x1="78" y1="32" x2="72" y2="54" stroke="white" stroke-width="2" opacity=".62"/>
+        <line x1="60" y1="24" x2="72" y2="54" stroke="white" stroke-width="2" opacity=".62"/>
+        <line x1="42" y1="32" x2="48" y2="58" stroke="white" stroke-width="1.7" opacity=".5"/>
+        <line x1="72" y1="54" x2="48" y2="58" stroke="white" stroke-width="1.7" opacity=".5"/>
+        <!-- Medical cross removed -->
+      </svg>
+    </div>
+    <div class="login-title">PaedNeuroCompanion</div>
+    <div style="font-size:13px;color:var(--teal-d);font-weight:600;margin-bottom:8px">Paediatric Neurology Expertise by your side, always!</div>
+    <div class="login-sub">A clinical decision-support system for paediatric neurology. Sign in with your institutional or personal Google account to continue.</div>
+    <button class="btn-google" onclick="googleSignIn()">
+      <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.2l6.8-6.8C35.8 2.4 30.2 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.9 6.1C12.5 13 17.9 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.6 5.9c4.5-4.1 7-10.2 7-17.1z"/><path fill="#FBBC05" d="M10.6 28.6A14.6 14.6 0 0 1 9.5 24c0-1.6.3-3.2.8-4.6l-7.9-6.1A23.8 23.8 0 0 0 0 24c0 3.9.9 7.5 2.5 10.8l8.1-6.2z"/><path fill="#34A853" d="M24 48c6.2 0 11.4-2 15.2-5.5l-7.6-5.9c-2 1.4-4.6 2.2-7.6 2.2-6.1 0-11.3-4.1-13.2-9.6l-8.1 6.2C6.5 42.5 14.6 48 24 48z"/></svg>
+      Continue with Google
+    </button>
+    <div class="login-disc"><b>CLINICAL DECISION-SUPPORT ONLY</b> — All outputs must be verified by a qualified paediatric neurologist. Never act on the output of this application alone.</div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="main-app" style="display:none">
+  <header class="hdr">
+    <div class="hdr-in">
+      <div class="hdr-brand">
+        <div class="hdr-icon">
+          <svg width="28" height="28" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M26 82 Q8 70 8 50 Q8 20 34 12 Q60 4 76 22 Q92 40 88 62 Q84 76 70 84" fill="none" stroke="white" stroke-width="5.5" stroke-linecap="round" opacity=".45"/>
+            <path d="M32 78 Q16 72 14 56 Q12 42 20 32 Q22 24 30 20 Q30 10 40 8 Q50 6 56 12 Q64 6 74 10 Q84 14 86 26 Q94 30 96 44 Q98 58 90 68 Q82 78 66 80 Z" fill="none" stroke="white" stroke-width="3.8" stroke-linejoin="round" opacity=".9"/>
+            <path d="M38 14 Q42 24 36 36" stroke="white" stroke-width="1.8" stroke-linecap="round" fill="none" opacity=".45"/>
+            <path d="M56 12 Q62 24 56 40 Q52 52 54 64" stroke="white" stroke-width="1.8" stroke-linecap="round" fill="none" opacity=".45"/>
+            <path d="M74 12 Q80 26 76 42 Q72 56 74 68" stroke="white" stroke-width="1.8" stroke-linecap="round" fill="none" opacity=".4"/>
+            <circle cx="42" cy="32" r="5.5" fill="white" opacity=".96"/>
+            <circle cx="60" cy="24" r="5.5" fill="white" opacity=".96"/>
+            <circle cx="78" cy="32" r="5.5" fill="white" opacity=".96"/>
+            <circle cx="72" cy="54" r="5.5" fill="white" opacity=".96"/>
+            <circle cx="48" cy="58" r="4.5" fill="white" opacity=".78"/>
+            <line x1="42" y1="32" x2="60" y2="24" stroke="white" stroke-width="2" opacity=".62"/>
+            <line x1="60" y1="24" x2="78" y2="32" stroke="white" stroke-width="2" opacity=".62"/>
+            <line x1="78" y1="32" x2="72" y2="54" stroke="white" stroke-width="2" opacity=".62"/>
+            <line x1="60" y1="24" x2="72" y2="54" stroke="white" stroke-width="2" opacity=".62"/>
+            <line x1="42" y1="32" x2="48" y2="58" stroke="white" stroke-width="1.7" opacity=".5"/>
+            <line x1="72" y1="54" x2="48" y2="58" stroke="white" stroke-width="1.7" opacity=".5"/>
+          </svg>
+        </div>
+        <div>
+          <div class="hdr-name">PaedNeuroCompanion</div>
+          <div class="hdr-tag">Paediatric Neurology Expertise by your side, always!</div>
+        </div>
+      </div>
+      <div class="hdr-right">
+        <div class="hdr-pill">⚕ Clinical Decision-Support · Not a Diagnosis</div>
+        <div class="user-chip">
+          <div class="user-av" id="user-av">DC</div>
+          <span class="user-name" id="user-name">Dr. Clinician</span>
+          <button class="btn-lo" onclick="signOut()">Sign out</button>
+        </div>
+      </div>
+    </div>
+  </header>
+  <div class="safety"><b>CLINICAL DECISION-SUPPORT ONLY</b> — All outputs must be verified by a qualified paediatric neurologist. Never act on the output of this application alone.</div>
+  <div class="app">
+    <div class="upload-banner">
+      <div class="upload-left">
+        <div class="upload-icon">📄</div>
+        <div>
+          <div class="upload-title">Auto-populate from Medical Records</div>
+          <div class="upload-sub">Upload a PDF or Word document — fields extracted and populated automatically</div>
+        </div>
+      </div>
+      <button class="btn-upload" onclick="document.getElementById('file-input').click()">⬆ Upload Document</button>
+      <input type="file" id="file-input" accept=".pdf,.doc,.docx,.txt" style="display:none" onchange="handleUpload(event)">
+    </div>
+    <div id="upload-status"></div>
+    <div class="stepper"><div class="strack" id="strack"></div></div>
+    <div id="page-wrap"></div>
+  </div>
+</div>
+
+<script>
+// ─── DATA MODEL ────────────────────────────────────────────────────────────
+const D = {
+  age:'', ageUnit:'years', sex:'', weight:'', ethnicity:'', consanguinity:'',
+  heightCentile:'', weightCentile:'', hcCentile:'', headCirc:'',
+  gestation:'', birthMode:'', apgar1:'', apgar5:'', nicu:'', nicuReason:'',
+  birthComp:'', neonatalSeizures:'', neonatalHypo:'', neonatalJaundice:'',
+  neonatalTone:'', neonatalFeed:'', maternalIllness:'', maternalMeds:'',
+  maternalInfections:'', fetalMovements:'',
+  polyhydramnios:'', antenatalUS:'', antenatalMRI:'', antenatalBloodTests:'', antenatalGenetics:'',
+  devStatus:'', headControl:'', sitting:'', standing:'', walking:'',
+  firstWords:'', sentences:'', pincer:'', toilet:'',
+  devRegression:'', regressionAge:'', schoolPerf:'', neuropsychDx:'',
+  chiefComplaint:'', onsetType:'', duration:'', durationUnit:'days', progression:'',
+  triggers:'', priorEpisodes:'', family:'', familyPedigree:'',
+  past:'', meds:'', allergies:'', immunisations:'', infectiousHx:'', toxinExposure:'',
+  feedingIssues:'', dietaryRestrictions:'', failureToThrive:'',
+  behaviour:'', autismFeatures:'', adhd:'', sleepIssues:'',
+  systemicSymptoms:'', autonomic:'', visionHearing:'', breathOdour:'',
+  seizureYN:'', seizureType:'', seizureFreq:'', lastSeizure:'', seizureDuration:'',
+  statusEpilepticus:'', seizureCluster:'', seizureTrigger:'',
+  aura:'', ictalFeatures:'', postIctal:'', seizedSleep:'',
+  symptoms: [],
+  bp:'', hr:'', temp:'', spo2:'', headClass:'', fontanelle:'', skullAusc:'',
+  craniofacial:'', craniofacialDetail:'', neurocutaneous:'', neurocutaneousDetail:'',
+  hairAbnormality:'', skinDetail:'', dysmorphicFacies:'', dysmorphicExtremities:'',
+  organomegaly:'', spineExam:'',
+  papilloedema:'', cherryRedSpot:'', nystagmus:'', strabismus:'',
+  eyeDetail:'', hearingExam:'', tongueDetail:'', breathOdourExam:'',
+  consciousness:'Alert', gcs:'', mentalStatus:'',
+  cranialNerves:'', facialAsymmetry:'', bulbarSigns:'',
+  motorPower:'', motorPattern:'', tone:'Normal', muscleBulk:'Normal',
+  reflexes:'Normal', plantars:'', primitiveReflexes:'',
+  sensory:'', romberg:'', cerebellar:'', involuntaryMov:'',
+  gait:'', coordination:'', otherNeuroFindings:'',
+  abdomen:'', respiratory:'', cardiovascular:'', systemsOther:'',
+  eeg:'', eegIctal:'', nmj:'', vep:'', otherNeurophysiology:'',
+  mri:'', ct:'', mriSpine:'', usHead:'', petBrain:'', spectBrain:'', otherNeuroimaging:'',
+  fbc:'', renalFn:'', lft:'', electrolytes:'', ck:'', bloodGas:'', otherBloodTests:'',
+  lactate:'', vitaminPanel:'', metabolicAdvanced:'', nbs:'', mitoStudies:'', otherMetabolic:'',
+  csf:'', csfSpecial:'', otherCSF:'',
+  genetics:'', autoantibodies:'', otherGenetics:'',
+  biopsyResults:'', otherInv:'',
+  apiKey: localStorage.getItem('pnc_api_key') || ''
+};
+
+function initSymptoms() {
+  D.symptoms = [{ symptom:'', onset:'', duration:'', durationUnit:'weeks', progression:'Stable', notes:'' }];
+}
+initSymptoms();
+
+let currentStep = 0;
+
+const STEPS = [
+  'Patient', 'Perinatal', 'History',
+  'Gen Exam', 'Neuro Exam', 'Systems',
+  'Investigations', 'Review'
+];
+
+// ─── AUTH ──────────────────────────────────────────────────────────────────
+function googleSignIn() {
+  document.getElementById('login-page').style.display = 'none';
+  document.getElementById('main-app').style.display = 'block';
+  currentStep = 0;
+  buildPage();
+}
+function signOut() {
+  document.getElementById('main-app').style.display = 'none';
+  document.getElementById('login-page').style.display = 'flex';
+}
+
+// ─── STEPPER ──────────────────────────────────────────────────────────────
+function updateStepper() {
+  let h = '';
+  STEPS.forEach((s, i) => {
+    const done = i < currentStep, active = i === currentStep;
+    const cls = done ? 'done' : active ? 'active' : '';
+    h += `<div class="snode">
+      <div class="sdot ${cls}" onclick="jumpTo(${i})">${done ? '✓' : i + 1}</div>
+      <div class="slabel ${cls}">${s}</div>
+    </div>`;
+    if (i < STEPS.length - 1) h += `<div class="sline${done ? ' done' : ''}"></div>`;
+  });
+  document.getElementById('strack').innerHTML = h;
+}
+function jumpTo(i) { currentStep = i; buildPage(); }
+
+function showValidationError(errs) {
+  const wrap = document.getElementById('page-wrap');
+  const errDiv = document.createElement('div');
+  errDiv.style.cssText = 'background:var(--rose-p);border:1px solid var(--rose-l);border-radius:var(--r);padding:12px 16px;margin-bottom:12px;font-size:13px;color:#9F1239';
+  errDiv.innerHTML = '<strong>Please complete required fields:</strong><ul style="margin:6px 0 0 16px">' +
+    errs.map(e => `<li>${e}</li>`).join('') + '</ul>';
+  wrap.insertBefore(errDiv, wrap.firstChild);
+  wrap.scrollIntoView({behavior:'smooth'});
+}
+
+// ─── CORE DOM HELPERS ─────────────────────────────────────────────────────
+function el(tag, attrs = {}, ...children) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === 'class') e.className = v;
+    else if (k.startsWith('on')) e[k] = v;
+    else e.setAttribute(k, v);
+  }
+  children.forEach(c => {
+    if (c === null || c === undefined) return;
+    if (typeof c === 'string') e.appendChild(document.createTextNode(c));
+    else if (c instanceof Node) e.appendChild(c);
+  });
+  return e;
+}
+function div(cls, ...children) { return el('div', { class: cls }, ...children); }
+function span(cls, text) { const s = el('span', { class: cls }); s.textContent = text; return s; }
+
+// FIX BUG #3 & #4: mkTextarea now accepts optional 4th `extraClass` param
+function mkInput(field, placeholder, type = 'text', extraClass = '') {
+  const inp = document.createElement('input');
+  inp.type = type;
+  inp.placeholder = placeholder;
+  inp.value = D[field] || '';
+  if (extraClass) inp.className = extraClass;
+  inp.oninput = () => { D[field] = inp.value; };
+  return inp;
+}
+
+function mkTextarea(field, placeholder, rows = 3, extraClass = '') {
+  const ta = document.createElement('textarea');
+  ta.rows = rows;
+  ta.placeholder = placeholder;
+  ta.value = D[field] || '';
+  if (extraClass) ta.className = extraClass;
+  ta.oninput = () => { D[field] = ta.value; };
+  return ta;
+}
+
+function mkSelect(field, options) {
+  const sel = document.createElement('select');
+  options.forEach(o => {
+    const opt = document.createElement('option');
+    opt.value = o;
+    opt.textContent = o;
+    if (D[field] === o) opt.selected = true;
+    sel.appendChild(opt);
+  });
+  sel.onchange = () => { D[field] = sel.value; };
+  return sel;
+}
+
+function mkPills(field, options, warnVals = []) {
+  const wrap = div('pg');
+  options.forEach(o => {
+    const p = div('pill' + (D[field] === o ? (warnVals.includes(o) ? ' warn' : ' on') : ''));
+    p.textContent = o;
+    p.onclick = () => {
+      D[field] = o;
+      wrap.querySelectorAll('.pill').forEach(pp => {
+        const isThis = pp.textContent === o;
+        const isWarn = warnVals.includes(pp.textContent);
+        pp.className = 'pill' + (isThis ? (isWarn ? ' warn' : ' on') : '');
+      });
+      if (field === 'seizureYN') rebuildSeizureSection();
+    };
+    wrap.appendChild(p);
+  });
+  return wrap;
+}
+
+function mkField(labelText, control, req = false, opt = false) {
+  const lbl = el('div', { class: 'flabel' });
+  lbl.textContent = labelText;
+  if (req) { const r = el('span', { class: 'req' }); r.textContent = ' *'; lbl.appendChild(r); }
+  if (opt) { const o = el('span', { class: 'opt' }); o.textContent = ' optional'; lbl.appendChild(o); }
+  const fld = div('fld');
+  fld.appendChild(lbl);
+  fld.appendChild(control);
+  return fld;
+}
+
+function mkNote(html, cls = '') {
+  const d = el('div', { class: 'note ' + cls });
+  d.innerHTML = html;
+  return d;
+}
+
+function mkSS(label) {
+  const d = div('ss');
+  const s = el('span', { class: 'ss-lbl' });
+  s.textContent = label;
+  d.appendChild(s);
+  return d;
+}
+
+function mkGrid(cls, ...children) {
+  const g = div(cls);
+  children.forEach(c => g.appendChild(c));
+  return g;
+}
+
+function mkInlineRow(...children) {
+  const row = div('irow');
+  children.forEach(c => row.appendChild(c));
+  return row;
+}
+
+// ─── SYMPTOM TABLE ─────────────────────────────────────────────────────────
+let symTableBody = null;
+
+function mkSymRow(i) {
+  const s = D.symptoms[i];
+  const tr = document.createElement('tr');
+
+  const makeCell = (...nodes) => {
+    const td = document.createElement('td');
+    nodes.forEach(n => td.appendChild(n));
+    return td;
+  };
+
+  // Symptom name
+  const symInp = document.createElement('input');
+  symInp.placeholder = 'e.g. Focal clonic seizures';
+  symInp.value = s.symptom;
+  symInp.style.minWidth = '150px';
+  symInp.oninput = () => { D.symptoms[i].symptom = symInp.value; };
+
+  // Onset dropdown — NEW
+  const onsetSel = document.createElement('select');
+  onsetSel.style.minWidth = '108px';
+  ['—','Hyperacute','Acute','Subacute','Chronic','Episodic'].forEach(o => {
+    const opt = document.createElement('option');
+    opt.value = o === '—' ? '' : o;
+    opt.textContent = o;
+    if ((s.onset || '') === (o === '—' ? '' : o)) opt.selected = true;
+    onsetSel.appendChild(opt);
+  });
+  onsetSel.onchange = () => { D.symptoms[i].onset = onsetSel.value; };
+
+  // Duration number
+  const durInp = document.createElement('input');
+  durInp.type = 'number';
+  durInp.placeholder = '6';
+  durInp.value = s.duration;
+  durInp.style.width = '44px';
+  durInp.style.display = 'inline-block';
+  durInp.oninput = () => { D.symptoms[i].duration = durInp.value; };
+
+  // Duration unit dropdown
+  const durSel = document.createElement('select');
+  ['hours','days','weeks','months','years'].forEach(u => {
+    const o = document.createElement('option');
+    o.value = u; o.textContent = u;
+    if (s.durationUnit === u) o.selected = true;
+    durSel.appendChild(o);
+  });
+  durSel.style.width = '78px';
+  durSel.style.display = 'inline-block';
+  durSel.style.marginLeft = '3px';
+  durSel.onchange = () => { D.symptoms[i].durationUnit = durSel.value; };
+
+  // Course / progression dropdown
+  const progSel = document.createElement('select');
+  progSel.style.minWidth = '122px';
+  ['Stable','Improving','Worsening','Fluctuating','Episodic','Stepwise worse','Remitting'].forEach(p => {
+    const o = document.createElement('option');
+    o.value = p; o.textContent = p;
+    if (s.progression === p) o.selected = true;
+    progSel.appendChild(o);
+  });
+  progSel.onchange = () => { D.symptoms[i].progression = progSel.value; };
+
+  // Notes — includes triggers, prior episodes & recovery
+  const notesInp = document.createElement('input');
+  notesInp.placeholder = 'Triggers, prior episodes, recovery…';
+  notesInp.value = s.notes;
+  notesInp.style.minWidth = '180px';
+  notesInp.oninput = () => { D.symptoms[i].notes = notesInp.value; };
+
+  const delBtn = document.createElement('button');
+  delBtn.className = 'btn-del';
+  delBtn.textContent = '✕';
+  delBtn.onclick = () => {
+    D.symptoms.splice(i, 1);
+    if (!D.symptoms.length) initSymptoms();
+    rebuildSymTable();
+  };
+
+  const durCell = document.createElement('td');
+  durCell.style.whiteSpace = 'nowrap';
+  durCell.appendChild(durInp);
+  durCell.appendChild(durSel);
+
+  tr.appendChild(makeCell(symInp));
+  tr.appendChild(makeCell(onsetSel));
+  tr.appendChild(durCell);
+  tr.appendChild(makeCell(progSel));
+  tr.appendChild(makeCell(notesInp));
+  tr.appendChild(makeCell(delBtn));
+  return tr;
+}
+
+function rebuildSymTable() {
+  if (!symTableBody) return;
+  symTableBody.innerHTML = '';
+  D.symptoms.forEach((_, i) => symTableBody.appendChild(mkSymRow(i)));
+}
+
+function mkSymTable() {
+  const wrap = div('stw');
+  const scrollDiv = div('');
+  scrollDiv.style.overflowX = 'auto';
+
+  const table = document.createElement('table');
+  table.className = 'stbl';
+
+  const thead = document.createElement('thead');
+  thead.innerHTML = `<tr>
+    <th>Symptom / Sign <span style="color:var(--rose)">*</span></th>
+    <th>Onset</th>
+    <th>Duration</th>
+    <th>Course</th>
+    <th>Notes — triggers · episodes · recovery</th>
+    <th></th>
+  </tr>`;
+  table.appendChild(thead);
+
+  const tbody = document.createElement('tbody');
+  symTableBody = tbody;
+  D.symptoms.forEach((_, i) => tbody.appendChild(mkSymRow(i)));
+  table.appendChild(tbody);
+
+  scrollDiv.appendChild(table);
+  wrap.appendChild(scrollDiv);
+
+  const addBtn = document.createElement('button');
+  addBtn.className = 'btn-add';
+  addBtn.textContent = '＋ Add Symptom';
+  addBtn.onclick = () => {
+    D.symptoms.push({ symptom:'', onset:'', duration:'', durationUnit:'weeks', progression:'Stable', notes:'' });
+    rebuildSymTable();
+  };
+  wrap.appendChild(addBtn);
+  return wrap;
+}
+
+// ─── SEIZURE SECTION ──────────────────────────────────────────────────────
+let seizureDetailContainer = null;
+
+function rebuildSeizureSection() {
+  if (!seizureDetailContainer) return;
+  seizureDetailContainer.innerHTML = '';
+  if (!D.seizureYN || D.seizureYN === 'No') {
+    if (D.seizureYN === 'No') {
+      seizureDetailContainer.appendChild(mkNote('Seizure details hidden — change selection above to expand.', 'note-g'));
+    }
+    return;
+  }
+  appendSeizureFields(seizureDetailContainer);
+}
+
+function appendSeizureFields(container) {
+  // Seizure type + frequency + duration + last seizure on top rows
+  container.appendChild(mkGrid('g2',
+    mkField('Seizure type(s)', mkTextarea('seizureType', 'Focal aware/impaired, GTCS, absence, myoclonic, tonic, atonic, infantile spasms, febrile…', 2), false, true),
+    mkField('Aura / pre-ictal', mkInput('aura', 'Visual, epigastric, fear, Jacksonian march…'), false, true)
+  ));
+  container.appendChild(mkGrid('g3',
+    mkField('Frequency', mkInput('seizureFreq', 'e.g. 3/week, daily'), false, true),
+    mkField('Typical duration', mkInput('seizureDuration', 'e.g. 30–90s'), false, true),
+    mkField('Last seizure', mkInput('lastSeizure', 'e.g. 2 days ago'), false, true)
+  ));
+  container.appendChild(mkGrid('g2',
+    mkField('Ictal features', mkInput('ictalFeatures', 'Eye deviation, automatisms, tonic posturing, cyanosis…'), false, true),
+    mkField('Post-ictal state', mkInput('postIctal', 'Todd paresis, confusion, deep sleep, aphasia…'), false, true)
+  ));
+  container.appendChild(mkGrid('g3',
+    mkField('Status epilepticus', mkPills('statusEpilepticus', ['No','Yes — once','Yes — recurrent','Yes — refractory'], ['Yes — once','Yes — recurrent','Yes — refractory']), false, true),
+    mkField('Clustering', mkPills('seizureCluster', ['No','Occasional','Frequent'], ['Frequent']), false, true),
+    mkField('From sleep', mkPills('seizedSleep', ['No','Sleep only','Both']), false, true)
+  ));
+  container.appendChild(mkField('Known triggers', mkInput('seizureTrigger', 'Fever (Dravet!), sleep deprivation, photosensitivity, fasting, exercise, hot bath…'), false, true));
+}
+
+// ─── PAGE BUILDERS (compact) ───────────────────────────────────────────────
+
+// Thin horizontal divider used between grouped rows within a card section
+function mkDivider() {
+  const d = document.createElement('hr');
+  d.style.cssText = 'border:none;border-top:1px solid var(--border);margin:10px 0';
+  return d;
+}
+
+function mkSubHdr(text) {
+  const d = div('');
+  d.style.cssText = 'font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--teal-d);margin:14px 0 8px;display:flex;align-items:center;gap:8px';
+  d.textContent = text;
+  return d;
+}
+
+function mkAgeInput() {
+  const sel = document.createElement('select');
+  sel.className = 'req-border';
+  sel.style.cssText = 'width:110px;font-size:14px;padding:8px 10px;height:40px;flex-shrink:0;';
+  const placeholder = document.createElement('option');
+  placeholder.value = ''; placeholder.textContent = 'Age…'; placeholder.disabled = true;
+  if (!D.age) placeholder.selected = true;
+  sel.appendChild(placeholder);
+  for (let i = 1; i <= 30; i++) {
+    const opt = document.createElement('option');
+    opt.value = String(i); opt.textContent = String(i);
+    if (D.age === String(i)) opt.selected = true;
+    sel.appendChild(opt);
+  }
+  sel.addEventListener('change', function() { D.age = this.value; });
+  return sel;
+}
+
+// ── STEP 1: Patient ─────────────────────────────────────────────────────────
+// Compacted: centiles merged into one row; weight+HC inline with age+sex
+function buildPatientPage() {
+  const card = div('card');
+  card.innerHTML = '<div class="sec-hdr"><div class="sec-ico">👤</div><div><div class="sec-title">Patient</div><div class="sec-sub">Age and sex required</div></div></div>';
+
+  // Row 1: age + sex + weight + HC on one row
+  card.appendChild(mkGrid('g4',
+    mkField('Age', mkInlineRow(mkAgeInput(), mkSelect('ageUnit', ['days','months','years'])), true),
+    mkField('Sex', mkPills('sex', ['Male','Female','Other']), true),
+    mkField('Weight (kg)', mkInput('weight', 'kg', 'number'), false, true),
+    mkField('Head circ. (cm)', mkInput('headCirc', 'cm', 'number'), false, true)
+  ));
+
+  // Row 2: centiles + ethnicity + consanguinity combined
+  card.appendChild(mkGrid('g4',
+    mkField('Height centile', mkInput('heightCentile', 'e.g. 25th'), false, true),
+    mkField('Weight centile', mkInput('weightCentile', 'e.g. 10th'), false, true),
+    mkField('HC centile', mkInput('hcCentile', 'e.g. >97th'), false, true),
+    mkField('Ethnicity', mkInput('ethnicity', 'e.g. South Asian'), false, true)
+  ));
+
+  card.appendChild(mkField('Consanguinity', mkPills('consanguinity', ['No','Yes — 1st cousin','Yes — other','Unknown']), false, true));
+  return card;
+}
+
+// ── STEP 2: Perinatal & Development ─────────────────────────────────────────
+function mkGestationSelect() {
+  const sel = document.createElement('select');
+  const placeholder = document.createElement('option');
+  placeholder.value = ''; placeholder.textContent = 'Select…'; placeholder.disabled = true;
+  if (!D.gestation) placeholder.selected = true;
+  sel.appendChild(placeholder);
+  for (let w = 20; w <= 46; w++) {
+    const o = document.createElement('option');
+    o.value = String(w); o.textContent = `${w} weeks`;
+    if (D.gestation === String(w)) o.selected = true;
+    sel.appendChild(o);
+  }
+  sel.onchange = () => { D.gestation = sel.value; };
+  return sel;
+}
+
+function buildPerinatalPage() {
+  const card = div('card');
+  card.innerHTML = '<div class="sec-hdr"><div class="sec-ico" style="width:48px;height:32px;padding:0 2px;overflow:visible"><svg width="48" height="30" viewBox="0 0 56 32" fill="none" xmlns="http://www.w3.org/2000/svg"><!-- Pregnant mother (left) --><!-- Head --><circle cx="10" cy="5" r="4" fill="var(--teal-d)" opacity=".85"/><!-- Body with bump --><path d="M10 9 C10 9 6 12 6 17 L6 24 L14 24 L14 17 C14 17 16 14 14 11 Z" fill="var(--teal-d)" opacity=".75"/><!-- Pregnancy bump --><ellipse cx="15.5" cy="17" rx="4" ry="5" fill="var(--teal)" opacity=".55"/><!-- Arm reaching forward --><path d="M14 13 Q19 15 20 18" stroke="var(--teal-d)" stroke-width="2" stroke-linecap="round" fill="none" opacity=".7"/><!-- Legs --><path d="M8 24 L7 31" stroke="var(--teal-d)" stroke-width="2" stroke-linecap="round"/><!-- Right leg --><path d="M13 24 L14 31" stroke="var(--teal-d)" stroke-width="2" stroke-linecap="round"/><!-- Crawling baby (right) --><!-- Head --><circle cx="41" cy="22" r="4.5" fill="var(--teal)" opacity=".85"/><!-- Body horizontal --><ellipse cx="34" cy="26" rx="5.5" ry="3.5" fill="var(--teal)" opacity=".65"/><!-- Arm front --><path d="M30 27 Q28 29 27 31" stroke="var(--teal-d)" stroke-width="1.8" stroke-linecap="round" fill="none"/><!-- Arm back --><path d="M38 27 Q40 29 41 31" stroke="var(--teal-d)" stroke-width="1.8" stroke-linecap="round" fill="none"/><!-- Knee/leg back --><path d="M38 26 Q42 24 45 27" stroke="var(--teal-d)" stroke-width="1.8" stroke-linecap="round" fill="none" opacity=".8"/><!-- Motion dots --><circle cx="23" cy="20" r="1" fill="var(--teal)" opacity=".4"/><circle cx="25" cy="22" r="1" fill="var(--teal)" opacity=".3"/></svg></div><div><div class="sec-title">Perinatal &amp; Development</div><div class="sec-sub">All optional — enter what is known</div></div></div>';
+
+  // ── Pregnancy ──────────────────────────────────────────────────────────────
+  card.appendChild(mkSubHdr('Pregnancy'));
+
+  // Row 1: gestation + delivery + fetal movements dropdown + polyhydramnios dropdown
+  card.appendChild(mkGrid('g4',
+    mkField('Gestational age', mkGestationSelect(), false, true),
+    mkField('Mode of delivery', mkSelect('birthMode', ['Not specified','SVD','Forceps','Ventouse','Emergency LSCS','Elective LSCS']), false, true),
+    mkField('Fetal movements', mkSelect('fetalMovements', ['Not specified','Normal','Reduced','Absent']), false, true),
+    mkField('Polyhydramnios', mkSelect('polyhydramnios', ['Not specified','No','Yes']), false, true)
+  ));
+
+  // Row 2: maternal illness+infections combined; birth complications separate
+  card.appendChild(mkGrid('g2',
+    mkField('Maternal illness, medications & infections', mkTextarea('maternalIllness', 'DM, HTN, epilepsy; AEDs (valproate!), alcohol, smoking; TORCH (CMV, rubella, HSV, Zika, syphilis)…', 2), false, true),
+    mkField('Birth complications', mkTextarea('birthComp', 'Cord prolapse, meconium, shoulder dystocia, HIE, resuscitation required, fetal distress…', 2), false, true)
+  ));
+
+  // ── Antenatal Investigations ───────────────────────────────────────────────
+  card.appendChild(mkSubHdr('Antenatal Investigations'));
+
+  // Styled disclosure container with subtle teal background
+  const anteBox = div('');
+  anteBox.style.cssText = 'background:var(--teal-p);border:1px solid var(--teal-m);border-radius:var(--rl);padding:12px 14px;margin-bottom:10px';
+
+  const anteNote = div('');
+  anteNote.style.cssText = 'font-size:11px;color:var(--teal-d);font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:6px';
+  anteNote.innerHTML = '<span style="font-size:14px">🔬</span> Enter any abnormalities found during pregnancy — leave blank if normal or not performed';
+  anteBox.appendChild(anteNote);
+
+  anteBox.appendChild(mkGrid('g2',
+    mkField('Antenatal ultrasound', mkTextarea('antenatalUS',
+      'Ventriculomegaly, corpus callosum agenesis, cerebellar hypoplasia, holoprosencephaly, cortical malformation, IUGR, hydrops, structural anomalies, timing of scan…', 2), false, true),
+    mkField('Fetal MRI', mkTextarea('antenatalMRI',
+      'Cortical malformation, lissencephaly, polymicrogyria, heterotopia, posterior fossa anomaly, corpus callosum, brainstem, ventricular size… or "Not done"', 2), false, true)
+  ));
+  anteBox.appendChild(mkGrid('g2',
+    mkField('Antenatal blood tests', mkTextarea('antenatalBloodTests',
+      'Maternal serum screen (trisomy risk), TORCH serology, thyroid, glucose tolerance, haemoglobin, blood group/antibodies, carrier screen, any abnormal results…', 2), false, true),
+    mkField('Antenatal genetic tests', mkTextarea('antenatalGenetics',
+      'Chorionic villus sampling (CVS), amniocentesis, chromosomal microarray, karyotype, NIPT result, gene panel, family variant testing, result and gestational age…', 2), false, true)
+  ));
+
+  card.appendChild(anteBox);
+
+  // ── Neonatal ──────────────────────────────────────────────────────────────
+  card.appendChild(mkSubHdr('Neonatal'));
+
+  // Apgars in same row as NICU
+  card.appendChild(mkGrid('g4',
+    mkField('Apgar 1 min', mkInput('apgar1', '0–10', 'number'), false, true),
+    mkField('Apgar 5 min', mkInput('apgar5', '0–10', 'number'), false, true),
+    mkField('NICU', mkPills('nicu', ['No','Yes','Unknown']), false, true),
+    mkField('NICU reason', mkInput('nicuReason', 'e.g. HIE 14d'), false, true)
+  ));
+  card.appendChild(mkGrid('g4',
+    mkField('Neonatal seizures', mkPills('neonatalSeizures', ['No','Yes','Suspected'], ['Yes','Suspected']), false, true),
+    mkField('Neonatal tone', mkPills('neonatalTone', ['Normal','Hypotonic','Hypertonic','Unknown']), false, true),
+    mkField('Hypoglycaemia', mkPills('neonatalHypo', ['No','Yes','Unknown'], ['Yes']), false, true),
+    mkField('Jaundice', mkPills('neonatalJaundice', ['No','Physiological','Pathological','Unknown'], ['Pathological']), false, true)
+  ));
+  card.appendChild(mkField('Neonatal feeding', mkPills('neonatalFeed', ['Normal','Poor suck','NGT required','PEG from birth','Unknown']), false, true));
+
+  // ── Developmental Milestones ───────────────────────────────────────────────
+  card.appendChild(mkSubHdr('Developmental Milestones'));
+  card.appendChild(mkGrid('g4',
+    mkField('Head control', mkInput('headControl', 'e.g. 4m'), false, true),
+    mkField('Sitting', mkInput('sitting', 'e.g. 8m'), false, true),
+    mkField('Walking', mkInput('walking', 'e.g. 14m'), false, true),
+    mkField('Pincer grasp', mkInput('pincer', 'e.g. 10m'), false, true)
+  ));
+  card.appendChild(mkGrid('g4',
+    mkField('First words', mkInput('firstWords', 'e.g. 12m'), false, true),
+    mkField('2-word sentences', mkInput('sentences', 'e.g. 24m'), false, true),
+    mkField('Toilet trained', mkInput('toilet', 'e.g. 3y'), false, true),
+    mkField('School performance', mkSelect('schoolPerf', ['N/A','Age-appropriate','Mild difficulties','Significant difficulties','SEN','Deteriorating']), false, true)
+  ));
+  card.appendChild(mkGrid('g2',
+    mkField('Overall developmental status', mkPills('devStatus', ['Normal','Mildly delayed','Moderately delayed','Severely delayed','Regressing','Previously normal then regressing']), false, true),
+    mkField('Regression — when & trigger', mkInput('regressionAge', 'e.g. 18m after febrile illness'), false, true)
+  ));
+  card.appendChild(mkField('Prior cognitive / neuropsychological diagnoses', mkTextarea('neuropsychDx', 'ASD, ADHD, intellectual disability, DLD, DCD…', 2), false, true));
+  return card;
+}
+
+// ── STEP 3: History ──────────────────────────────────────────────────────────
+function buildHistoryPage() {
+  const card = div('card');
+  card.innerHTML = '<div class="sec-hdr"><div class="sec-ico">📋</div><div><div class="sec-title">History</div><div class="sec-sub">Chief complaint required — all other fields optional</div></div></div>';
+
+  card.appendChild(mkField('Chief Complaint', mkTextarea('chiefComplaint', 'Main presenting problem…', 2, 'req-border'), true));
+
+  // ── Seizures ──────────────────────────────────────────────────────────────
+  card.appendChild(mkSubHdr('Seizures'));
+  card.appendChild(mkField('Seizures?', mkPills('seizureYN', ['No','Yes — confirmed epilepsy','Yes — possible (unconfirmed)','Resolved / seizure-free'])));
+  seizureDetailContainer = div('');
+  rebuildSeizureSection();
+  card.appendChild(seizureDetailContainer);
+
+  // ── Symptom Log (incorporates onset / course / triggers / prior episodes) ─
+  card.appendChild(mkSubHdr('Symptom Log'));
+  card.appendChild(mkNote('Enter each symptom separately. <strong>Duration</strong> = how long present. <strong>Course</strong> = trajectory. <strong>Notes</strong> = include triggers and prior similar episodes / recovery.'));
+  card.appendChild(mkSymTable());
+
+  // ── Past History, Meds, Immunisations ─────────────────────────────────────
+  card.appendChild(mkSubHdr('Past History, Medications & Immunisations'));
+  card.appendChild(mkField('Past medical / surgical history', mkTextarea('past', 'Prior diagnoses, hospitalisations, NBS result, metabolic crises…', 2), false, true));
+  card.appendChild(mkGrid('g2',
+    mkField('Current medications', mkTextarea('meds', 'AEDs, steroids, vitamins, supplements, OTC, traditional medicines…', 2), false, true),
+    mkField('Allergies & adverse reactions', mkTextarea('allergies', 'Drug name, reaction type, severity…', 2), false, true)
+  ));
+  card.appendChild(mkGrid('g2',
+    mkField('Immunisations', mkPills('immunisations', ['Up to date','Incomplete','Not vaccinated','Unknown']), false, true),
+    mkField('Infections / travel / toxic exposures', mkTextarea('infectiousHx', 'Viral prodrome, tick bite, travel, recent vaccination; lead, CO, pesticides, in-utero valproate…', 2), false, true)
+  ));
+
+  // ── Family History ────────────────────────────────────────────────────────
+  card.appendChild(mkSubHdr('Family History'));
+  card.appendChild(mkGrid('g2',
+    mkField('Family neurological history', mkTextarea('family', 'Epilepsy (type + age), ID, movement disorder, metabolic disease, early deaths <5y…', 3), false, true),
+    mkField('Inheritance pattern / pedigree', mkTextarea('familyPedigree', 'Maternal vs paternal, consanguinity, mitochondrial, X-linked, AD de novo…', 3), false, true)
+  ));
+
+  // ── Behaviour, Psychiatry & Sleep ─────────────────────────────────────────
+  // ASD and ADHD now live here as pills, with feeding & sleep in same section
+  card.appendChild(mkSubHdr('Behaviour, Psychiatry & Sleep'));
+  card.appendChild(mkGrid('g3',
+    mkField('ASD features', mkPills('autismFeatures', ['None','Mild','Moderate','Formally diagnosed']), false, true),
+    mkField('ADHD features', mkPills('adhd', ['None','Mild','Significant','Formally diagnosed']), false, true),
+    mkField('Feeding & diet', mkTextarea('feedingIssues', 'Poor suck/swallow, PEG, aspiration; ketogenic, PKU, restricted protein…', 2), false, true)
+  ));
+  card.appendChild(mkGrid('g2',
+    mkField('Behaviour / psychiatric symptoms', mkTextarea('behaviour', 'Aggression, anxiety, psychosis, hallucinations (Wilson\'s/NMDAR!), OCD, catatonia, mood disorder…', 2), false, true),
+    mkField('Sleep & autonomic symptoms', mkTextarea('sleepIssues', 'Insomnia, apnoea, night terrors, REM behaviour disorder; anhidrosis, syncope, bladder/bowel dysfunction…', 2), false, true)
+  ));
+
+  // ── Systemic Review ───────────────────────────────────────────────────────
+  // Includes FTT, odour, organ malformation — vision/hearing kept separate below
+  card.appendChild(mkSubHdr('Systemic Review'));
+  card.appendChild(mkGrid('g3',
+    mkField('Failure to thrive', mkPills('failureToThrive', ['No','Mild','Significant','Obesity']), false, true),
+    mkField('Characteristic odour', mkTextarea('breathOdour', 'Maple syrup (MSUD), mousy (PKU), sweaty feet (isovaleric), ammonia (urea cycle)…', 2), false, true),
+    mkField('Organ malformation / structural anomalies', mkTextarea('systemicSymptoms', 'Cardiac, renal, hepatic, GU anomalies; headaches, weight loss, fatigue, vomiting…', 2), false, true)
+  ));
+
+  // ── Vision & Hearing ─────────────────────────────────────────────────────
+  card.appendChild(mkSubHdr('Vision & Hearing'));
+  card.appendChild(mkGrid('g2',
+    mkField('Vision', mkTextarea('visionHearing', 'Visual acuity, field defects, cortical visual impairment, photosensitivity, nystagmus history…', 2), false, true),
+    mkField('Hearing', mkTextarea('autonomic', 'SNHL (mitochondrial, Usher, Pendred), conductive, audiogram result, age of detection…', 2), false, true)
+  ));
+
+  return card;
+}
+
+// ── STEP 4: General Exam ─────────────────────────────────────────────────────
+// Compacted: vitals 1 row; head size+fontanelle+auscultation 1 row;
+// dysmorphism: presence pill + detail textarea side by side;
+// neurocutaneous: same pattern; face/extremities/spine/organomegaly merged;
+// tongue/odour merged; eye pills 1 row + detail 1 row; hearing merged
+function buildGenExamPage() {
+  const card = div('card');
+  card.innerHTML = '<div class="sec-hdr"><div class="sec-ico">🔍</div><div><div class="sec-title">General Examination</div><div class="sec-sub">All optional</div></div></div>';
+
+  card.appendChild(mkSubHdr('Vitals'));
+  card.appendChild(mkGrid('g4',
+    mkField('BP (mmHg)', mkInput('bp', 'e.g. 110/70'), false, true),
+    mkField('HR (bpm)', mkInput('hr', 'e.g. 90', 'number'), false, true),
+    mkField('Temp (°C)', mkInput('temp', 'e.g. 37.8', 'number'), false, true),
+    mkField('SpO₂ (%)', mkInput('spo2', 'e.g. 98', 'number'), false, true)
+  ));
+
+  card.appendChild(mkSubHdr('Head'));
+  card.appendChild(mkGrid('g3',
+    mkField('Head size', mkPills('headClass', ['Normocephaly','Microcephaly (<-2SD)','Microcephaly (<-3SD)','Macrocephaly (>+2SD)','Hemimegalencephaly','Craniosynostosis']), false, true),
+    mkField('Fontanelle', mkPills('fontanelle', ['N/A','Normal/flat','Bulging','Full under tension','Sunken','Delayed closure'], ['Bulging','Full under tension']), false, true),
+    mkField('Skull auscultation', mkInput('skullAusc', 'e.g. cranial bruit'), false, true)
+  ));
+
+  card.appendChild(mkSubHdr('Dysmorphism & Neurocutaneous'));
+  // Craniofacial: presence pill + detail side by side
+  card.appendChild(mkGrid('g2',
+    mkField('Craniofacial dysmorphism', mkPills('craniofacial', ['None','Present — definite','Subtle / uncertain']), false, true),
+    mkField('Craniofacial detail', mkTextarea('craniofacialDetail', 'Hypertelorism, epicanthal folds, low-set ears, micrognathia, broad nasal bridge, synophrys…', 2), false, true)
+  ));
+  // Neurocutaneous: presence + detail side by side (Wood's lamp note inline)
+  card.appendChild(mkGrid('g2',
+    mkField('Neurocutaneous (Wood\'s UV lamp)', mkPills('neurocutaneous', ['None','Present — definite','Present — uncertain']), false, true),
+    mkField('Neurocutaneous detail', mkTextarea('neurocutaneousDetail', 'Café-au-lait ≥6 (NF1), ash-leaf (TSC), shagreen, port-wine stain (Sturge-Weber), confetti…', 2), false, true)
+  ));
+  // Facies + extremities merged into one row
+  card.appendChild(mkGrid('g2',
+    mkField('Dysmorphic facies & hair', mkTextarea('dysmorphicFacies', 'Coarse (MPS), elfin (Williams), flat (Down), synophrys (Angelman); kinky hair (Menkes)…', 2), false, true),
+    mkField('Extremities, spine & skin', mkTextarea('dysmorphicExtremities', 'Broad thumb, pes cavus, scoliosis, sacral dimple; ichthyosis, angiokeratoma (Fabry)…', 2), false, true)
+  ));
+  // Organomegaly + tongue/odour on one row
+  card.appendChild(mkGrid('g2',
+    mkField('Organomegaly', mkPills('organomegaly', ['None','Hepatomegaly','Splenomegaly','Hepatosplenomegaly','Cardiomegaly'], ['Hepatomegaly','Splenomegaly','Hepatosplenomegaly']), false, true),
+    mkField('Tongue / mouth / breath odour', mkTextarea('tongueDetail', 'Macroglossia (Pompe), fasciculations (LMN!); maple syrup (MSUD), mousy (PKU), ammonia (urea cycle)…', 2), false, true)
+  ));
+
+  card.appendChild(mkSubHdr('Eyes & Hearing'));
+  // Four eye pills on one row
+  card.appendChild(mkGrid('g4',
+    mkField('Papilloedema', mkPills('papilloedema', ['Absent','Present','Uncertain'], ['Present']), false, true),
+    mkField('Cherry-red spot', mkPills('cherryRedSpot', ['Absent','Present','Not examined'], ['Present']), false, true),
+    mkField('Nystagmus', mkPills('nystagmus', ['Absent','Horizontal','Vertical','Gaze-evoked','Rotatory']), false, true),
+    mkField('Strabismus', mkPills('strabismus', ['Absent','Esotropia','Exotropia','Vertical','Paralytic']), false, true)
+  ));
+  // Eye detail + hearing merged side by side
+  card.appendChild(mkGrid('g2',
+    mkField('Eye — additional findings', mkTextarea('eyeDetail', 'KF rings (Wilson\'s), corneal opacity (MPS), cataracts, retinal pigment degeneration (NCL), optic atrophy…', 2), false, true),
+    mkField('Hearing', mkTextarea('hearingExam', 'Normal; SNHL (mito, Usher, Pendred); conductive; audiogram result…', 2), false, true)
+  ));
+  return card;
+}
+
+// ── STEP 5: Neuro Exam ───────────────────────────────────────────────────────
+// Compacted: consciousness+GCS+mental status on one row;
+// cranial nerves+facial asymmetry side by side;
+// motor power+pattern side by side (already was);
+// tone+bulk side by side; DTR+plantars side by side;
+// sensory+Romberg; cerebellar+involuntary; gait+coordination — all pairs
+function buildNeuroExamPage() {
+  const card = div('card');
+  card.innerHTML = '<div class="sec-hdr"><div class="sec-ico">🧠</div><div><div class="sec-title">Neurological Examination</div><div class="sec-sub">Consciousness, motor, reflexes required</div></div></div>';
+
+  card.appendChild(mkSubHdr('Consciousness & Cognition'));
+  card.appendChild(mkGrid('g3',
+    mkField('Consciousness', mkPills('consciousness', ['Alert','Confused','Drowsy','Stuporous','Comatose'], ['Stuporous','Comatose']), true),
+    mkField('GCS', mkInput('gcs', 'E+V+M e.g. 15'), false, true),
+    mkField('Higher functions', mkTextarea('mentalStatus', 'Orientation, memory, attention, language, executive…', 2), false, true)
+  ));
+
+  card.appendChild(mkSubHdr('Cranial Nerves'));
+  card.appendChild(mkGrid('g2',
+    mkField('Cranial nerves I–XII', mkTextarea('cranialNerves', 'Abnormalities or "All intact"…', 2)),
+    mkField('Facial asymmetry & bulbar signs', mkTextarea('bulbarSigns', 'UMN (spares forehead) / LMN; dysarthria, dysphagia, fasciculations…', 2), false, true)
+  ));
+
+  card.appendChild(mkSubHdr('Motor System'));
+  card.appendChild(mkGrid('g2',
+    mkField('Motor power (MRC)', mkTextarea('motorPower', 'RUL /5, LUL /5, RLL /5, LLL /5…', 2), true),
+    mkField('Weakness distribution', mkPills('motorPattern', ['Normal','Monoparesis','Hemiparesis','Diplegia','Paraparesis','Tetraparesis','Proximal predominant','Distal predominant','Bulbar predominant']), true)
+  ));
+  card.appendChild(mkGrid('g2',
+    mkField('Tone', mkPills('tone', ['Normal','Global hypotonia','Spastic hypertonia','Rigid (lead-pipe)','Cogwheel rigidity','Dystonic posturing','Fluctuating']), true),
+    mkField('Muscle bulk', mkPills('muscleBulk', ['Normal','Generalised wasting','Proximal wasting','Distal wasting','Pseudohypertrophy (calves)','Asymmetric wasting']), false, true)
+  ));
+
+  card.appendChild(mkSubHdr('Reflexes'));
+  card.appendChild(mkGrid('g2',
+    mkField('Deep tendon reflexes', mkPills('reflexes', ['Normal','Globally absent','Globally reduced','Hyperreflexia','Asymmetric','Mixed brisk + absent']), true),
+    mkField('Plantars & primitive reflexes', mkTextarea('primitiveReflexes', 'Plantars: flexor / Babinski / equivocal; Moro, grasp, ATNR — note age if persisting…', 2), false, true)
+  ));
+
+  card.appendChild(mkSubHdr('Sensory & Cerebellar'));
+  card.appendChild(mkGrid('g2',
+    mkField('Sensory & Romberg', mkTextarea('sensory', 'Pain, temp, vibration, JPS — stocking-glove, level, dissociated; Romberg +/-…', 2)),
+    mkField('Cerebellar signs', mkTextarea('cerebellar', 'Dysmetria, dysdiadochokinesia, intention tremor, titubation, ataxic speech…', 2))
+  ));
+
+  card.appendChild(mkSubHdr('Movement, Gait & Other'));
+  card.appendChild(mkGrid('g2',
+    mkField('Involuntary movements', mkTextarea('involuntaryMov', 'Chorea, dystonia, myoclonus (stimulus-sensitive?), tics, tremor, stereotypies…', 2)),
+    mkField('Gait & coordination', mkTextarea('gait', 'Hemiplegic, scissor, ataxic, steppage, toe-walking; FNF, HSH, RAM…', 2))
+  ));
+  card.appendChild(mkField('Other neurological findings', mkTextarea('otherNeuroFindings', 'Meningism, raised ICP signs, apraxia, cortical blindness, abnormal saccades…', 2), false, true));
+  return card;
+}
+
+// ── STEP 6: Systems ──────────────────────────────────────────────────────────
+// Compacted: all 4 systems as a simple 2×2 grid — no separate sub-headers needed
+function buildSystemsPage() {
+  const card = div('card');
+  card.innerHTML = '<div class="sec-hdr"><div class="sec-ico">🫀</div><div><div class="sec-title">System Examination</div><div class="sec-sub">All optional — hepatosplenomegaly, cardiomyopathy, respiratory failure are key clues</div></div></div>';
+  card.appendChild(mkGrid('g2',
+    mkField('Abdomen', mkTextarea('abdomen', 'Liver size/edge, spleen, kidneys, ascites, hernias, feeding tube…', 3), false, true),
+    mkField('Respiratory', mkTextarea('respiratory', 'Rate, pattern (Cheyne-Stokes, Kussmaul, apnoeas), air entry, work of breathing, O₂ support…', 3), false, true)
+  ));
+  card.appendChild(mkGrid('g2',
+    mkField('Cardiovascular', mkTextarea('cardiovascular', 'Heart rate/rhythm, murmurs (site/grade), CRT, oedema, cyanosis, cardiomegaly…', 3), false, true),
+    mkField('Other systems', mkTextarea('systemsOther', 'MSK (contractures, scoliosis), GU (ambiguous genitalia), lymphadenopathy, thyroid…', 3), false, true)
+  ));
+  return card;
+}
+
+// ── STEP 7: Investigations ───────────────────────────────────────────────────
+function buildInvestigationsPage() {
+  const card = div('card');
+  card.innerHTML = '<div class="sec-hdr"><div class="sec-ico">🔬</div><div><div class="sec-title">Investigations</div><div class="sec-sub">All optional — leave blank if not done</div></div></div>';
+
+  // ── Neurophysiology ─────────────────────────────────────────────────────────
+  card.appendChild(mkSubHdr('Neurophysiology'));
+
+  // EEG sub-block with its own subtle background
+  const eegBox = div('');
+  eegBox.style.cssText = 'background:var(--teal-p);border:1px solid var(--teal-m);border-radius:var(--rl);padding:11px 13px;margin-bottom:10px';
+
+  const eegHdr = div('');
+  eegHdr.style.cssText = 'font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--teal-d);margin-bottom:9px;display:flex;align-items:center;gap:5px';
+  eegHdr.innerHTML = '<span style="font-size:13px">⚡</span> EEG';
+  eegBox.appendChild(eegHdr);
+
+  // Merged interictal + ictal in a single field — one textarea
+  eegBox.appendChild(mkField('EEG findings — interictal & ictal / video-EEG',
+    mkTextarea('eeg',
+      'Background (normal for age / slow / burst suppression / hypsarrhythmia); Interictal: focal or diffuse epileptiform discharges, CSWS, ESES, photoparoxysmal; Ictal / video-EEG: onset zone, propagation, EEG-clinical correlation, seizure type confirmation… or "Not done"',
+      3), false, true));
+  card.appendChild(eegBox);
+
+  // Other neurophysiological tests sub-block
+  const neurBox = div('');
+  neurBox.style.cssText = 'background:var(--slate-p);border:1px solid var(--border-d);border-radius:var(--rl);padding:11px 13px;margin-bottom:10px';
+
+  const neurHdr = div('');
+  neurHdr.style.cssText = 'font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-s);margin-bottom:9px;display:flex;align-items:center;gap:5px';
+  neurHdr.innerHTML = '<span style="font-size:13px">📈</span> Other Neurophysiological Tests';
+  neurBox.appendChild(neurHdr);
+
+  neurBox.appendChild(mkGrid('g2',
+    mkField('NCS — nerve conduction studies', mkTextarea('nmj',
+      'Sensory/motor nerve conduction velocities; axonal vs demyelinating; sensorimotor neuropathy pattern; CMAP amplitude… or "Not done"', 2), false, true),
+    mkField('EMG — electromyography', mkTextarea('otherNeurophysiology',
+      'Myopathic (small polyphasic) vs neurogenic (large polyphasic, fibrillation); NMJ: repetitive stimulation (decrement = MG; increment = LEMS); SFEMG jitter… or "Not done"', 2), false, true)
+  ));
+  neurBox.appendChild(mkGrid('g3',
+    mkField('VEP — visual evoked potentials', mkTextarea('vep',
+      'P100 latency prolonged (demyelination); amplitude reduced; monocular vs binocular… or "Not done"', 2), false, true),
+    mkField('BAER / ABR — brainstem auditory evoked', mkTextarea('eegIctal',
+      'Wave I–V latencies; I–V interpeak interval prolonged (brainstem); SNHL pattern; threshold… or "Not done"', 2), false, true),
+    mkField('ERG — electroretinogram', mkTextarea('spectBrain',
+      'Reduced / absent rod or cone response; photoreceptor dystrophy (NCL, Leber); pattern ERG; flash ERG… or "Not done"', 2), false, true)
+  ));
+  card.appendChild(neurBox);
+
+  // ── Neuroimaging ────────────────────────────────────────────────────────────
+  card.appendChild(mkSubHdr('Neuroimaging'));
+  card.appendChild(mkField('MRI Brain', mkTextarea('mri', 'Normal / malformation / leukodystrophy / BG change / DWI / MRS (lactate peak) / hippocampal sclerosis / PVL / corpus callosum anomaly…', 3), false, true));
+  card.appendChild(mkGrid('g3',
+    mkField('CT Head', mkTextarea('ct', 'Calcifications (TSC, Sturge-Weber), haemorrhage, hydrocephalus… or "Not done"', 2), false, true),
+    mkField('MRI Spine / Head US', mkTextarea('mriSpine', 'Cord signal change, syrinx, tethered cord; IVH grade, PVL (neonates)… or "Not done"', 2), false, true),
+    mkField('PET / SPECT / Other imaging', mkTextarea('petBrain', 'Seizure focus, hypo/hypermetabolism; DTI, fMRI, skeletal survey… or "Not done"', 2), false, true)
+  ));
+
+  // ── Blood Tests ─────────────────────────────────────────────────────────────
+  card.appendChild(mkSubHdr('Blood Tests'));
+  card.appendChild(mkGrid('g2',
+    mkField('FBC, renal, LFTs & electrolytes', mkTextarea('fbc', 'Hb, WBC, platelets, blood film; urea, Cr; ALT, AST, ALP, GGT, albumin; Na, K, Ca, Mg, glucose…', 2), false, true),
+    mkField('CK, blood gas & other bloods', mkTextarea('ck', 'CK (mU/mL, context); pH, pCO₂, HCO₃, base excess, lactate; TFTs, B12, homocysteine, ammonia, copper, caeruloplasmin…', 2), false, true)
+  ));
+
+  // ── Metabolic & Specialist ──────────────────────────────────────────────────
+  card.appendChild(mkSubHdr('Metabolic & Specialist'));
+  card.appendChild(mkGrid('g2',
+    mkField('Lactate / ammonia & NBS / vitamins', mkTextarea('lactate', 'Fasting lactate (mM), L:P, pyruvate, ammonia; NBS result; B1, B6/PLP, B12, biotin, folate, CoQ10…', 2), false, true),
+    mkField('Advanced metabolic screen', mkTextarea('metabolicAdvanced', 'Plasma AAs, urine OAs, acylcarnitines, VLCFA, creatine/GAA, biotinidase, lysosomal enzymes (Pompe, Hex A+B), GAGs…', 2), false, true)
+  ));
+  card.appendChild(mkGrid('g2',
+    mkField('Mitochondrial studies', mkTextarea('mitoStudies', 'RC enzyme assays I–V, CoQ10, mtDNA copy number, SDH/COX histochemistry, ragged red fibres… or "Not done"', 2), false, true),
+    mkField('CSF — routine & specialised', mkTextarea('csf', 'Opening pressure, WBC, protein, glucose (paired ratio), culture, viral PCR; lactate/pyruvate, neurotransmitters, oligoclonal bands, NMDAR/LGI1 in CSF… or "Not done"', 2), false, true)
+  ));
+
+  // ── Genetics, Immunology & Other ────────────────────────────────────────────
+  card.appendChild(mkSubHdr('Genetics, Immunology & Other'));
+  card.appendChild(mkGrid('g2',
+    mkField('Genetics', mkTextarea('genetics', 'Karyotype, microarray (CNVs), epilepsy panel, trio WES/WGS, SCN1A, MECP2, POLG1, TSC1/2, methylation (15q11), fragile X, repeat expansions…', 3), false, true),
+    mkField('Autoantibodies & other', mkTextarea('autoantibodies', 'Anti-NMDAR, LGI1, CASPR2, MOG-IgG, AQP4-IgG, VGCC, GAD65, onconeuronal; biopsy (muscle/nerve/skin); ECG/ECHO, swallow study…', 3), false, true)
+  ));
+  return card;
+}
+
+function buildReviewPage() {
+  const syms = D.symptoms.filter(s => s.symptom.trim()).length;
+  const card = div('card');
+  card.innerHTML = `<div class="sec-hdr"><div class="sec-ico">✅</div><div><div class="sec-title">Review & Submit</div><div class="sec-sub">Confirm your data, enter your API key, and run the analysis</div></div></div>
+  <div class="rv-grid">
+    <div class="rv-tile"><div class="rvl">Age / Sex</div><div class="rvv">${D.age||'?'} ${D.ageUnit}, ${D.sex||'not specified'}</div></div>
+    <div class="rv-tile"><div class="rvl">Gestation</div><div class="rvv">${D.gestation?D.gestation+' wks':'—'}</div></div>
+    <div class="rv-tile"><div class="rvl">Head</div><div class="rvv">${D.headClass||'—'}</div></div>
+    <div class="rv-tile"><div class="rvl">Development</div><div class="rvv">${D.devStatus||'—'}</div></div>
+    <div class="rv-tile"><div class="rvl">Onset · Progression</div><div class="rvv">${D.onsetType||'?'} · ${D.progression||'?'}</div></div>
+    <div class="rv-tile"><div class="rvl">Consciousness</div><div class="rvv">${D.consciousness||'—'}</div></div>
+    <div class="rv-tile"><div class="rvl">Tone</div><div class="rvv">${D.tone||'—'}</div></div>
+    <div class="rv-tile"><div class="rvl">Reflexes</div><div class="rvv">${D.reflexes||'—'}</div></div>
+    <div class="rv-tile"><div class="rvl">Symptoms logged</div><div class="rvv">${syms} symptom(s)</div></div>
+  </div>
+  <hr>
+  <div class="fld" style="margin-bottom:14px">
+    <div class="flabel">Chief Complaint</div>
+    <div style="padding:11px 14px;background:var(--teal-p);border-radius:var(--r);border:1px solid var(--teal-m);font-size:13px;color:var(--ink-m);min-height:40px">${D.chiefComplaint||'<em style="color:var(--ink-f)">Not entered</em>'}</div>
+  </div>`;
+
+  const apiBox = div('api-box');
+  apiBox.style.display = 'none'; // API key handled server-side via proxy
+  const apiLbl = el('div', { class: 'flabel' });
+  apiLbl.innerHTML = '🔑 Anthropic API Key <span style="font-size:11px;font-weight:500;color:var(--ink-s)">(required — starts with sk-ant-…)</span>';
+  apiLbl.style.color = 'var(--amber)';
+
+  const apiInp = document.createElement('input');
+  apiInp.type = 'password';
+  apiInp.placeholder = 'sk-ant-…';
+  apiInp.autocomplete = 'off';
+  apiInp.setAttribute('autocomplete', 'new-password');
+  apiInp.value = D.apiKey || '';
+  apiInp.style.borderColor = 'var(--amber-l)';
+  apiInp.style.fontSize = '14px';
+  apiInp.style.padding = '10px 14px';
+  apiInp.addEventListener('input', function() {
+    D.apiKey = this.value.trim();
+    if (D.apiKey) localStorage.setItem('pnc_api_key', D.apiKey);
+  });
+
+  const apiHint = el('div', {});
+  apiHint.style.cssText = 'font-size:11px;color:var(--ink-s);margin-top:5px';
+  const saved = localStorage.getItem('pnc_api_key');
+  apiHint.textContent = saved
+    ? '✅ API key saved — remembered permanently on this device. Update above to change it.'
+    : 'Used directly in your browser only. Saved permanently on this device — you will never need to re-enter it.';
+
+  const apiFld = div('fld');
+  apiFld.appendChild(apiLbl);
+  apiFld.appendChild(apiInp);
+  apiFld.appendChild(apiHint);
+  apiBox.appendChild(apiFld);
+  card.appendChild(apiBox);
+  return card;
+}
+
+// ─── MAIN PAGE BUILDER ─────────────────────────────────────────────────────
+function buildPage() {
+  updateStepper();
+  const wrap = document.getElementById('page-wrap');
+  wrap.innerHTML = '';
+
+  const builders = [
+    buildPatientPage, buildPerinatalPage, buildHistoryPage, buildGenExamPage,
+    buildNeuroExamPage, buildSystemsPage, buildInvestigationsPage, buildReviewPage
+  ];
+
+  if (currentStep < builders.length) {
+    wrap.appendChild(builders[currentStep]());
+  }
+
+  const nav = div('fnav');
+  if (currentStep > 0) {
+    const bk = el('button', { class: 'btn-back' });
+    bk.textContent = '← Back';
+    bk.onclick = () => { currentStep--; buildPage(); };
+    nav.appendChild(bk);
+  } else {
+    nav.appendChild(div(''));
+  }
+
+  if (currentStep < STEPS.length - 1) {
+    const nx = el('button', { class: 'btn-next' });
+    nx.textContent = 'Continue →';
+    nx.onclick = () => { currentStep++; buildPage(); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+    nav.appendChild(nx);
+  } else {
+    const run = el('button', { class: 'btn-run' });
+    run.textContent = '🔬 Run Analysis';
+    run.onclick = runAnalysis;
+    nav.appendChild(run);
+  }
+
+  wrap.appendChild(nav);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─── VALIDATION ────────────────────────────────────────────────────────────
+function validate() {
+  const e = [];
+  if (!D.age || !D.sex) e.push('Age and biological sex are required (Step 1 — Patient).');
+  if (!D.chiefComplaint.trim()) e.push('Chief complaint is required (Step 3 — History).');
+  if (!D.symptoms.some(s => s.symptom.trim())) e.push('At least one symptom is required (Step 3 — History).');
+  if (!D.consciousness) e.push('Level of consciousness is required (Step 5 — Neuro Exam).');
+  if (!D.motorPattern) e.push('Distribution of weakness (or "Normal") is required (Step 5 — Neuro Exam).');
+  if (!D.reflexes) e.push('Deep tendon reflexes finding is required (Step 5 — Neuro Exam).');
+  return e;
+}
+
+// ─── DOCUMENT UPLOAD & AUTO-POPULATE ───────────────────────────────────────
+// Load mammoth lazily for .docx → text conversion (avoids unsupported MIME type error)
+let mammothLoaded = false;
+async function loadMammoth() {
+  if (mammothLoaded) return;
+  await new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js';
+    s.onload = () => { mammothLoaded = true; res(); };
+    s.onerror = () => rej(new Error('Could not load mammoth.js'));
+    document.head.appendChild(s);
+  });
+}
+
+async function handleUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (!PROXY_URL && (!D.apiKey || !D.apiKey.startsWith('sk-'))) {
+    document.getElementById('upload-status').innerHTML =
+      `<div class="note note-a" style="margin-bottom:14px">⚠ Enter your API key on the Review step first, then upload.</div>`;
+    event.target.value = ''; return;
+  }
+
+  document.getElementById('upload-status').innerHTML =
+    `<div style="padding:12px 16px;background:var(--teal-p);border-radius:var(--rl);margin-bottom:14px;display:flex;align-items:center;gap:12px;border:1px solid var(--teal-m)">
+      <div class="spin" style="width:24px;height:24px;border-width:3px;margin:0;flex-shrink:0"></div>
+      <div><strong>Reading "${file.name}"…</strong>
+      <div style="font-size:12px;color:var(--ink-s);margin-top:2px">Extracting text and mapping to fields</div></div>
+    </div>`;
+
+  try {
+    let text = '';
+    const name = file.name.toLowerCase();
+
+    if (name.endsWith('.txt') || file.type === 'text/plain') {
+      // Plain text — read directly
+      text = await file.text();
+
+    } else if (name.endsWith('.docx') ||
+               file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+      // DOCX — extract text client-side with mammoth (API doesn't support docx MIME type)
+      await loadMammoth();
+      const arrayBuffer = await file.arrayBuffer();
+      const result = await mammoth.extractRawText({ arrayBuffer });
+      text = result.value;
+      if (!text || text.trim().length < 50) throw new Error('Document appears empty or could not be read');
+
+    } else if (name.endsWith('.pdf') || file.type === 'application/pdf') {
+      // PDF — send as base64 document block (supported by API)
+      const b64 = await new Promise((res, rej) => {
+        const r = new FileReader();
+        r.onload = () => res(r.result.split(',')[1]);
+        r.onerror = () => rej(new Error('File read failed'));
+        r.readAsDataURL(file);
+      });
+      const endpoint = PROXY_URL || 'https://api.anthropic.com/v1/messages';
+      const uploadHeaders = { 'Content-Type': 'application/json' };
+      if (!PROXY_URL) {
+        uploadHeaders['x-api-key'] = D.apiKey;
+        uploadHeaders['anthropic-version'] = '2023-06-01';
+        uploadHeaders['anthropic-dangerous-direct-browser-access'] = 'true';
+      }
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: uploadHeaders,
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-5',
+          max_tokens: 2000,
+          messages: [{ role: 'user', content: [
+            { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: b64 } },
+            { type: 'text', text: 'Extract ALL clinical text from this document verbatim. Return complete text only, no commentary.' }
+          ]}]
+        })
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err?.error?.message || `API error ${res.status}`);
+      }
+      const data = await res.json();
+      text = data.content.map(b => b.text || '').join('');
+
+    } else {
+      throw new Error(`Unsupported file type. Please upload a .docx, .pdf, or .txt file.`);
+    }
+
+    await populateFromText(text, file.name);
+
+  } catch (e) {
+    document.getElementById('upload-status').innerHTML =
+      `<div class="note note-r" style="margin-bottom:14px">⚠ ${e.message}</div>`;
+  }
+  event.target.value = '';
+}
+
+async function populateFromText(text, filename) {
+  // Two parallel API calls — each targets ~45 fields so neither can hit token limits.
+  // Call 1: demographics, perinatal, development, history, seizures, symptoms
+  // Call 2: examination, investigations
+  const DOC = text.slice(0, 12000);
+  const HEADER = 'Return ONLY valid compact JSON. No markdown. Missing="". Keep values under 100 chars. Use exact pill values listed.\n';
+
+  const prompt1 = HEADER + `Pill opts: sex:"Male"|"Female"|"Other" | ageUnit:"days"|"months"|"years" | devStatus:"Normal"|"Mildly delayed"|"Moderately delayed"|"Severely delayed"|"Regressing"|"Previously normal then regressing" | seizureYN:"No"|"Yes — confirmed epilepsy"|"Yes — possible (unconfirmed)"|"Resolved / seizure-free" | neonatalSeizures:"No"|"Yes"|"Suspected" | neonatalTone:"Normal"|"Hypotonic"|"Hypertonic"|"Unknown" | fetalMovements:"Not specified"|"Normal"|"Reduced"|"Absent" | polyhydramnios:"Not specified"|"No"|"Yes"
+Symptoms: [{symptom, onset("Hyperacute"|"Acute"|"Subacute"|"Chronic"|"Episodic"), duration(num), durationUnit("hours"|"days"|"weeks"|"months"|"years"), progression("Stable"|"Improving"|"Worsening"|"Fluctuating"|"Episodic"|"Stepwise worse"|"Remitting"), notes}]
+Return ONLY this JSON:
+{"age":"","ageUnit":"years","sex":"","weight":"","ethnicity":"","consanguinity":"","headCirc":"","gestation":"","birthMode":"","apgar1":"","apgar5":"","nicu":"","nicuReason":"","birthComp":"","neonatalSeizures":"","neonatalHypo":"","neonatalJaundice":"","neonatalTone":"","neonatalFeed":"","maternalIllness":"","fetalMovements":"","polyhydramnios":"","antenatalUS":"","antenatalMRI":"","antenatalBloodTests":"","antenatalGenetics":"","devStatus":"","headControl":"","sitting":"","walking":"","firstWords":"","sentences":"","devRegression":"","regressionAge":"","schoolPerf":"","neuropsychDx":"","chiefComplaint":"","seizureYN":"","seizureType":"","seizureFreq":"","seizureDuration":"","statusEpilepticus":"","aura":"","ictalFeatures":"","postIctal":"","seizureTrigger":"","past":"","meds":"","allergies":"","immunisations":"","infectiousHx":"","family":"","familyPedigree":"","autismFeatures":"","adhd":"","behaviour":"","sleepIssues":"","failureToThrive":"","breathOdour":"","systemicSymptoms":"","visionHearing":"","symptoms":[]}
+Document:---\n` + DOC + `\n---`;
+
+  const prompt2 = HEADER + `Pill opts: consciousness:"Alert"|"Confused"|"Drowsy"|"Stuporous"|"Comatose" | tone:"Normal"|"Global hypotonia"|"Spastic hypertonia"|"Rigid (lead-pipe)"|"Cogwheel rigidity"|"Dystonic posturing"|"Fluctuating" | reflexes:"Normal"|"Globally absent"|"Globally reduced"|"Hyperreflexia"|"Asymmetric"|"Mixed brisk + absent" | motorPattern:"Normal"|"Monoparesis"|"Hemiparesis"|"Diplegia"|"Paraparesis"|"Tetraparesis"|"Proximal predominant"|"Distal predominant"|"Bulbar predominant" | organomegaly:"None"|"Hepatomegaly"|"Splenomegaly"|"Hepatosplenomegaly"|"Cardiomegaly"
+Return ONLY this JSON:
+{"bp":"","hr":"","temp":"","spo2":"","headClass":"","fontanelle":"","craniofacial":"","craniofacialDetail":"","neurocutaneous":"","neurocutaneousDetail":"","organomegaly":"","papilloedema":"","cherryRedSpot":"","nystagmus":"","eyeDetail":"","hearingExam":"","tongueDetail":"","dysmorphicFacies":"","dysmorphicExtremities":"","consciousness":"Alert","gcs":"","mentalStatus":"","cranialNerves":"","facialAsymmetry":"","bulbarSigns":"","motorPower":"","motorPattern":"","tone":"Normal","muscleBulk":"Normal","reflexes":"Normal","plantars":"","primitiveReflexes":"","sensory":"","cerebellar":"","involuntaryMov":"","gait":"","otherNeuroFindings":"","abdomen":"","respiratory":"","cardiovascular":"","systemsOther":"","eeg":"","nmj":"","otherNeurophysiology":"","vep":"","eegIctal":"","mri":"","ct":"","mriSpine":"","fbc":"","ck":"","bloodGas":"","lactate":"","metabolicAdvanced":"","mitoStudies":"","csf":"","csfSpecial":"","genetics":"","autoantibodies":"","biopsyResults":"","otherInv":""}
+Document:---\n` + DOC + `\n---`;
+
+  const callExtract = async (prompt) => {
+    const endpoint = PROXY_URL || 'https://api.anthropic.com/v1/messages';
+    const extractHeaders = { 'Content-Type': 'application/json' };
+    if (!PROXY_URL) {
+      extractHeaders['x-api-key'] = D.apiKey;
+      extractHeaders['anthropic-version'] = '2023-06-01';
+      extractHeaders['anthropic-dangerous-direct-browser-access'] = 'true';
+    }
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: extractHeaders,
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-5',
+        max_tokens: 4096,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err?.error?.message || `API error ${res.status}`);
+    }
+    const data = await res.json();
+    const raw = data.content.map(b => b.text || '').join('');
+    const clean = raw.replace(/```json\s*/gi, '').replace(/```\s*/gi, '').trim();
+    const start = clean.indexOf('{'), end = clean.lastIndexOf('}');
+    if (start < 0 || end < 0) throw new Error('No JSON in extraction response — retry');
+    return JSON.parse(clean.slice(start, end + 1));
+  };
+
+  // Run both in parallel for speed
+  const [ext1, ext2] = await Promise.all([callExtract(prompt1), callExtract(prompt2)]);
+  const merged = { ...ext1, ...ext2 };
+
+  let count = 0;
+  for (const k in merged) {
+    if (k === 'symptoms') {
+      if (Array.isArray(merged.symptoms) && merged.symptoms.some(s => s.symptom && s.symptom.trim())) {
+        D.symptoms = merged.symptoms.filter(s => s.symptom && s.symptom.trim());
+        count++;
+      }
+    } else if (merged[k] !== '' && merged[k] !== null && merged[k] !== undefined && k in D) {
+      D[k] = merged[k];
+      count++;
+    }
+  }
+
+  document.getElementById('upload-status').innerHTML =
+    `<div style="padding:12px 16px;background:var(--emerald-p);border-radius:var(--rl);margin-bottom:14px;border:1.5px solid var(--emerald-l);font-size:13px;color:var(--emerald);font-weight:600">
+      \u2705 <strong>${filename}</strong> \u2014 ${count} fields populated. Review each step before running analysis.
+    </div>`;
+  buildPage();
+}
+
+// ─── ANALYSIS ──────────────────────────────────────────────────────────────
+function showLoader(msg, pct) {
+  updateStepper();
+  const wrap = document.getElementById('page-wrap');
+  wrap.innerHTML = `<div class="loader">
+    <div class="spin"></div>
+    <div style="font-size:17px;font-weight:800;color:var(--ink);margin-bottom:6px;letter-spacing:-.3px">Analysing Clinical Data</div>
+    <div style="font-size:13px;color:var(--ink-s);margin-bottom:4px">${msg}</div>
+    <div class="lbar"><div class="lfill" style="width:${pct}%"></div></div>
+    <div style="margin-top:16px;font-size:11.5px;color:var(--ink-f)">Clinical reasoning in progress · Do not close this window</div>
+  </div>`;
+}
+
+const PROXY_URL = 'https://lucky-sun-a191.aisrani98.workers.dev';
+
+async function callClaude(system, content, key) {
+  const endpoint = PROXY_URL || 'https://api.anthropic.com/v1/messages';
+  const headers = { 'Content-Type': 'application/json' };
+  if (!PROXY_URL) {
+    headers['x-api-key'] = key;
+    headers['anthropic-version'] = '2023-06-01';
+    headers['anthropic-dangerous-direct-browser-access'] = 'true';
+  }
+  const res = await fetch(endpoint, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-5',
+      max_tokens: 4096,
+      system: system,
+      messages: [{ role: 'user', content: content }]
+    })
+  });
+  if (!res.ok) {
+    const e = await res.json().catch(() => ({}));
+    throw new Error(e?.error?.message || `API error ${res.status}`);
+  }
+  const data = await res.json();
+  const raw = data.content.map(b => b.text || '').join('');
+  let clean = raw.replace(/```json\s*/gi, '').replace(/```\s*/gi, '').trim();
+  clean = clean.replace(/,\s*}/g, '}').replace(/,\s*]/g, ']');
+  const start = clean.indexOf('{');
+  const end = clean.lastIndexOf('}');
+  if (start < 0 || end < 0) throw new Error('No JSON found in response. Raw: ' + raw.slice(0, 200));
+  clean = clean.slice(start, end + 1);
+  try {
+    return JSON.parse(clean);
+  } catch (e1) {
+    const cleaned2 = clean.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, ' ');
+    try {
+      return JSON.parse(cleaned2);
+    } catch (e2) {
+      throw new Error('JSON parse error: ' + e2.message + '. Please retry.');
+    }
+  }
+}
+
+async function runAnalysis() {
+  const errs = validate();
+  if (errs.length) { showValidationError(errs); return; }
+  const key = D.apiKey ? D.apiKey.trim() : '';
+  if (!PROXY_URL && (!key || !key.startsWith('sk-'))) {
+    showValidationError(['Enter a valid Anthropic API key (starts with sk-ant-…) in the Review step.']);
+    return;
+  }
+  D.apiKey = key;
+  const summary = buildClinicalSummary();
+  try {
+    showLoader('Analysing — generating differential diagnoses…', 55);
+    const result = await callClaude(SYSTEM_PROMPT, summary, D.apiKey);
+    renderResults(result);
+  } catch (e) {
+    const wrap = document.getElementById('page-wrap');
+    wrap.innerHTML = `<div class="card">
+      <div style="color:var(--rose);font-weight:700;font-size:14px;margin-bottom:8px">⚠ Analysis failed</div>
+      <div style="font-size:13px;color:var(--ink-m);margin-bottom:12px">${e.message}</div>
+      <div class="note note-a">Check: valid API key · sufficient credits · network connection</div>
+      <div style="margin-top:14px"><button class="btn-back" onclick="currentStep=7;buildPage()">← Back to Review</button></div>
+    </div>`;
+  }
+}
+
+function buildClinicalSummary() {
+  // Only emit fields that have real clinical content.
+  // Skip empty strings, default dropdown values ('Not specified','N/A','Normal','Alert' etc)
+  // to keep the input token count low and the signal-to-noise ratio high.
+  const SKIP = new Set(['','Not specified','N/A','Unknown','Normal','Alert']);
+  const lines = [];
+  const add = (label, val) => {
+    const v = String(val || '').trim();
+    if (v && !SKIP.has(v)) lines.push(`${label}: ${v}`);
+  };
+  const addRaw = (label, val) => { if (val && String(val).trim()) lines.push(`${label}: ${val}`); };
+
+  // ── Demographics ──
+  if (D.age) add('Age', `${D.age} ${D.ageUnit}`);
+  add('Sex', D.sex);
+  add('Ethnicity', D.ethnicity);
+  if (D.consanguinity && D.consanguinity !== 'No') add('Consanguinity', D.consanguinity);
+  if (D.weight) add('Weight', D.weight + 'kg');
+  if (D.headCirc) add('HC', D.headCirc + 'cm');
+  addRaw('Chief complaint', D.chiefComplaint);
+
+  // ── Symptom log (core signal — always include) ──
+  const syms = D.symptoms.filter(s => s.symptom.trim());
+  if (syms.length) {
+    lines.push('Symptoms:');
+    syms.forEach(s => {
+      let l = `  ${s.symptom}`;
+      if (s.onset) l += ` | onset:${s.onset}`;
+      if (s.duration) l += ` | ${s.duration}${s.durationUnit}`;
+      if (s.progression && s.progression !== 'Stable') l += ` | ${s.progression}`;
+      if (s.notes) l += ` | ${s.notes}`;
+      lines.push(l);
+    });
+  }
+
+  // ── Seizures ──
+  if (D.seizureYN && D.seizureYN !== 'No') {
+    add('Seizures', D.seizureYN);
+    add('Seizure type', D.seizureType);
+    add('Frequency', D.seizureFreq);
+    add('Last seizure', D.lastSeizure);
+    add('Duration', D.seizureDuration);
+    if (D.statusEpilepticus && D.statusEpilepticus !== 'No') add('Status epilepticus', D.statusEpilepticus);
+    add('Ictal features', D.ictalFeatures);
+    add('Post-ictal', D.postIctal);
+    add('Aura', D.aura);
+    add('Seizure triggers', D.seizureTrigger);
+  }
+
+  // ── Perinatal (only non-default values) ──
+  if (D.gestation) add('Gestation', D.gestation + 'wks');
+  if (D.birthMode && D.birthMode !== 'Not specified') add('Delivery', D.birthMode);
+  const apgar = [D.apgar1, D.apgar5].filter(Boolean);
+  if (apgar.length) add('Apgars', apgar.join('/'));
+  if (D.nicu && D.nicu !== 'No') add('NICU', D.nicuReason || 'Yes');
+  addRaw('Birth complications', D.birthComp);
+  if (D.neonatalSeizures && D.neonatalSeizures !== 'No') add('Neonatal seizures', D.neonatalSeizures);
+  if (D.neonatalHypo === 'Yes') add('Neonatal hypoglycaemia', 'Yes');
+  if (D.neonatalTone && D.neonatalTone !== 'Normal') add('Neonatal tone', D.neonatalTone);
+  addRaw('Maternal hx', D.maternalIllness);
+  if (D.polyhydramnios === 'Yes') add('Polyhydramnios', 'Yes');
+  addRaw('Antenatal US', D.antenatalUS);
+  addRaw('Antenatal MRI', D.antenatalMRI);
+  addRaw('Antenatal genetics', D.antenatalGenetics);
+  if (D.fetalMovements && D.fetalMovements !== 'Normal' && D.fetalMovements !== 'Not specified') add('Fetal movements', D.fetalMovements);
+
+  // ── Development ──
+  if (D.devStatus && D.devStatus !== 'Normal') add('Development', D.devStatus);
+  if (D.devRegression && D.devRegression !== 'No') { add('Regression', D.devRegression); add('Regression onset', D.regressionAge); }
+  const miles = [
+    D.headControl && `head control ${D.headControl}`,
+    D.sitting && `sitting ${D.sitting}`,
+    D.walking && `walking ${D.walking}`,
+    D.firstWords && `words ${D.firstWords}`,
+    D.sentences && `sentences ${D.sentences}`
+  ].filter(Boolean);
+  if (miles.length) add('Milestones', miles.join(', '));
+  if (D.schoolPerf && D.schoolPerf !== 'N/A' && D.schoolPerf !== 'Age-appropriate') add('School', D.schoolPerf);
+  addRaw('Prior diagnoses', D.neuropsychDx);
+
+  // ── History ──
+  addRaw('Past medical hx', D.past);
+  addRaw('Medications', D.meds);
+  addRaw('Allergies', D.allergies);
+  addRaw('Family hx', D.family);
+  addRaw('Inheritance', D.familyPedigree);
+  if (D.immunisations && D.immunisations !== 'Up to date') add('Immunisations', D.immunisations);
+  addRaw('Infections/travel', D.infectiousHx);
+  if (D.autismFeatures && D.autismFeatures !== 'None') add('ASD features', D.autismFeatures);
+  if (D.adhd && D.adhd !== 'None') add('ADHD features', D.adhd);
+  if (D.failureToThrive && D.failureToThrive !== 'No') add('Failure to thrive', D.failureToThrive);
+  addRaw('Behaviour/psychiatric', D.behaviour);
+  addRaw('Sleep/autonomic', D.sleepIssues);
+  addRaw('Systemic symptoms', D.systemicSymptoms);
+  addRaw('Odour', D.breathOdour);
+  addRaw('Vision', D.visionHearing);
+  addRaw('Hearing', D.autonomic);
+
+  // ── General exam (only abnormals) ──
+  const vitals = [D.bp&&`BP:${D.bp}`, D.hr&&`HR:${D.hr}`, D.temp&&`T:${D.temp}`, D.spo2&&`SpO2:${D.spo2}`].filter(Boolean);
+  if (vitals.length) add('Vitals', vitals.join(' '));
+  if (D.headClass && D.headClass !== 'Normocephaly') add('Head', D.headClass);
+  if (D.fontanelle && !['N/A','Normal/flat'].includes(D.fontanelle)) add('Fontanelle', D.fontanelle);
+  if (D.craniofacial && D.craniofacial !== 'None') { add('Dysmorphism', D.craniofacial); addRaw('Dysmorphism detail', D.craniofacialDetail); }
+  if (D.neurocutaneous && D.neurocutaneous !== 'None') { add('Neurocutaneous', D.neurocutaneous); addRaw('Neurocutaneous detail', D.neurocutaneousDetail); }
+  if (D.organomegaly && D.organomegaly !== 'None') add('Organomegaly', D.organomegaly);
+  if (D.papilloedema === 'Present') add('Papilloedema', 'Present');
+  if (D.cherryRedSpot === 'Present') add('Cherry-red spot', 'Present');
+  if (D.nystagmus && D.nystagmus !== 'Absent') add('Nystagmus', D.nystagmus);
+  addRaw('Eye findings', D.eyeDetail);
+  addRaw('Dysmorphic facies', D.dysmorphicFacies);
+  addRaw('Extremities/spine', D.dysmorphicExtremities);
+  addRaw('Tongue/mouth', D.tongueDetail);
+
+  // ── Neuro exam ──
+  if (D.consciousness && D.consciousness !== 'Alert') add('Consciousness', D.consciousness);
+  if (D.gcs) add('GCS', D.gcs);
+  addRaw('Mental status', D.mentalStatus);
+  addRaw('Cranial nerves', D.cranialNerves);
+  addRaw('Motor power', D.motorPower);
+  if (D.motorPattern && D.motorPattern !== 'Normal') add('Motor pattern', D.motorPattern);
+  if (D.tone && D.tone !== 'Normal') add('Tone', D.tone);
+  if (D.muscleBulk && D.muscleBulk !== 'Normal') add('Bulk', D.muscleBulk);
+  if (D.reflexes && D.reflexes !== 'Normal') add('Reflexes', D.reflexes);
+  if (D.plantars && !D.plantars.includes('Flexor')) add('Plantars', D.plantars);
+  addRaw('Sensory', D.sensory);
+  addRaw('Cerebellar', D.cerebellar);
+  addRaw('Involuntary movements', D.involuntaryMov);
+  addRaw('Gait', D.gait);
+  addRaw('Other neuro', D.otherNeuroFindings);
+
+  // ── Systems ──
+  addRaw('Abdomen', D.abdomen);
+  addRaw('Respiratory', D.respiratory);
+  addRaw('Cardiovascular', D.cardiovascular);
+
+  // ── Investigations (only if populated) ──
+  addRaw('EEG', D.eeg);
+  addRaw('NCS/EMG', D.nmj);
+  addRaw('VEP/BAER/ERG', D.vep);
+  addRaw('MRI brain', D.mri);
+  addRaw('CT head', D.ct);
+  addRaw('MRI spine', D.mriSpine);
+  addRaw('FBC/renal/LFTs', D.fbc);
+  addRaw('CK/gas', D.ck);
+  addRaw('Lactate/ammonia', D.lactate);
+  addRaw('Metabolic screen', D.metabolicAdvanced);
+  addRaw('Mitochondrial', D.mitoStudies);
+  addRaw('CSF', D.csf);
+  addRaw('Genetics', D.genetics);
+  addRaw('Autoantibodies', D.autoantibodies);
+
+  const summary = lines.join('\n');
+  // Cap at 4000 chars — more than enough for the model, prevents input bloat
+  return summary.length > 4000 ? summary.slice(0, 4000) + '\n[truncated — provide key fields above]' : summary;
+}
+
+// ─── SYSTEM PROMPT (single-pass, compact output) ──────────────────────────
+// Single call, minimal JSON schema — prevents token-limit truncation that
+// caused the JSON parse error at position ~26000.
+
+const SYSTEM_PROMPT = `You are PaedNeuroCompanion — expert paediatric neurology clinical decision-support.
+
+REASONING (silent, before output):
+1. Differentials must be age-appropriate.
+2. Regression → metabolic/genetic in top 2.
+3. Drug safety — ABSOLUTE contraindications:
+   Dravet/SCN1A: NO carbamazepine/oxcarbazepine/lamotrigine/phenytoin/lacosamide
+   POLG1/mito epilepsy: NO valproate (fatal hepatotoxicity)
+   CAE/JAE: NO carbamazepine/oxcarbazepine/phenytoin/gabapentin/vigabatrin
+   JME: NO carbamazepine/oxcarbazepine/phenytoin
+   GLUT1: ketogenic diet = first-line
+   Refractory infant seizures: IV pyridoxine 100mg trial mandatory
+4. Neurocutaneous markers → name syndrome.
+5. Probabilities sum ~100. No single dx >65% without overwhelming evidence.
+6. for/against must cite THIS patient's specific findings only.
+
+STRICT OUTPUT RULES — violating these causes truncation errors:
+- Return ONLY compact JSON. Zero markdown. Zero text outside JSON.
+- urgency: one word only
+- localisation: ≤12 words
+- synopsis: ≤40 words total
+- differentials: EXACTLY 5 entries max
+- each diagnosis name: ≤6 words
+- each for/against item: ≤8 words, MAX 3 items each
+- keyTest: ≤8 words
+- redFlags: MAX 3 items, ≤10 words each
+- nextSteps: EXACTLY 5 entries, action ≤12 words each
+- drugWarnings: MAX 3 items, ≤15 words each
+- keyMissingData: ≤12 words
+
+{"urgency":"ROUTINE","localisation":"","synopsis":"","differentials":[{"rank":1,"diagnosis":"","probability":0,"for":[],"against":[],"keyTest":""}],"redFlags":[],"nextSteps":[{"priority":"URGENT","action":""}],"drugWarnings":[],"keyMissingData":""}`;
+
+
+
+// ─── RESULTS RENDERER — compact tabular layout ────────────────────────────
+function renderResults(r) {
+  const wrap = document.getElementById('page-wrap');
+  const isE = r.urgency === 'EMERGENCY', isU = r.urgency === 'URGENT';
+  const urgCls = isE ? 'ub ub-e' : isU ? 'ub ub-u' : '';
+  const urgMsg = isE ? '⚠ EMERGENCY — Immediate clinical intervention required.' : isU ? '⚠ URGENT — Specialist review within 24–48 hours.' : '';
+
+  // Differentials table rows
+  const diffRows = (r.differentials || []).map((dx, i) => {
+    const pct = Math.min(100, Math.max(0, Math.round(dx.probability || 0)));
+    const barCol = i === 0 ? '#8B1515' : i === 1 ? '#C4823A' : i === 2 ? '#2E6DA4' : '#7268A0';
+    const forList = (dx.for || []).map(f => `<li>${f}</li>`).join('');
+    const agList  = (dx.against || []).map(a => `<li>${a}</li>`).join('');
+    return `<tr>
+      <td style="font-weight:800;font-size:13px;color:var(--ink);min-width:160px;padding:10px 12px;vertical-align:top">
+        <div style="display:flex;align-items:center;gap:7px">
+          <span style="width:22px;height:22px;border-radius:50%;background:${barCol};color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i+1}</span>
+          ${dx.diagnosis}
+        </div>
+      </td>
+      <td style="padding:10px 12px;vertical-align:top;min-width:80px">
+        <div style="font-size:22px;font-weight:900;color:${barCol};line-height:1">${pct}%</div>
+        <div style="height:5px;background:var(--border);border-radius:3px;margin-top:4px;width:60px">
+          <div style="height:5px;border-radius:3px;background:${barCol};width:${pct}%"></div>
+        </div>
+      </td>
+      <td style="padding:10px 12px;vertical-align:top;font-size:12px;color:var(--emerald)">
+        <ul style="list-style:none;margin:0;padding:0">${forList}</ul>
+      </td>
+      <td style="padding:10px 12px;vertical-align:top;font-size:12px;color:var(--rose)">
+        <ul style="list-style:none;margin:0;padding:0">${agList}</ul>
+      </td>
+      <td style="padding:10px 12px;vertical-align:top;font-size:12px;color:var(--violet);font-weight:600;min-width:140px">${dx.keyTest || '—'}</td>
+    </tr>`;
+  }).join('');
+
+  // Next steps rows
+  const stepsRows = (r.nextSteps || []).map(s => {
+    const pc = s.priority === 'IMMEDIATE' ? '#8B1515' : s.priority === 'URGENT' ? '#7A4400' : '#4A7C59';
+    const pb = s.priority === 'IMMEDIATE' ? '#FDEAEA' : s.priority === 'URGENT' ? '#FDF4EA' : '#EBF4EE';
+    return `<tr>
+      <td style="padding:8px 12px;vertical-align:top;white-space:nowrap">
+        <span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:6px;background:${pb};color:${pc}">${s.priority}</span>
+      </td>
+      <td style="padding:8px 12px;font-size:13px;color:var(--ink-m)">${s.action}</td>
+    </tr>`;
+  }).join('');
+
+  // Red flags
+  const flagsH = (r.redFlags || []).map(f =>
+    `<div style="display:flex;align-items:flex-start;gap:7px;padding:6px 0;border-bottom:1px solid var(--rose-p);font-size:12.5px;color:var(--ink-m)">
+      <span style="color:var(--rose);font-weight:800;flex-shrink:0">⚠</span>${f}
+    </div>`
+  ).join('');
+
+  // Drug warnings
+  const drugsH = (r.drugWarnings || []).map(w =>
+    `<div style="display:flex;align-items:flex-start;gap:7px;padding:6px 0;border-bottom:1px solid var(--rose-p);font-size:12.5px;color:var(--ink-m)">
+      <span style="color:var(--rose);font-weight:800;flex-shrink:0">⛔</span>${w}
+    </div>`
+  ).join('');
+
+  wrap.innerHTML = `
+    ${urgCls ? `<div class="${urgCls}" style="border-radius:var(--rl);padding:12px 18px;margin-bottom:12px;display:flex;align-items:center;gap:10px;font-weight:800;font-size:14px">${urgMsg}</div>` : ''}
+
+    <div class="rhero">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px">
+        <div>
+          <div style="font-size:18px;font-weight:900;letter-spacing:-.3px">Clinical Analysis</div>
+          <div style="font-size:11px;opacity:.65;margin-top:3px">${new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})} · Clinical decision-support only</div>
+        </div>
+        <span style="padding:5px 14px;border-radius:18px;font-size:12px;font-weight:800;border:1.5px solid rgba(255,255,255,.3);background:rgba(255,255,255,.12)">${r.urgency || 'ROUTINE'}</span>
+      </div>
+      ${r.localisation ? `<div style="margin-top:10px;padding:10px 14px;background:rgba(255,255,255,.1);border-radius:9px;font-size:12.5px;color:rgba(255,255,255,.92)"><strong style="font-size:9px;text-transform:uppercase;letter-spacing:.5px;opacity:.6;display:block;margin-bottom:3px">Localisation</strong>${r.localisation}</div>` : ''}
+      ${r.synopsis ? `<div style="margin-top:8px;padding:10px 14px;background:rgba(255,255,255,.08);border-radius:9px;font-size:12.5px;color:rgba(255,255,255,.85)">${r.synopsis}</div>` : ''}
+    </div>
+
+    <div class="rsec">
+      <div class="rtitle">📊 Differential Diagnoses</div>
+      <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse;font-size:13px">
+          <thead>
+            <tr style="border-bottom:2px solid var(--border)">
+              <th style="text-align:left;padding:7px 12px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--teal-d)">Diagnosis</th>
+              <th style="text-align:left;padding:7px 12px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--teal-d)">Prob.</th>
+              <th style="text-align:left;padding:7px 12px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--emerald)">✓ In Favour</th>
+              <th style="text-align:left;padding:7px 12px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--rose)">✗ Against</th>
+              <th style="text-align:left;padding:7px 12px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--violet)">Key Test</th>
+            </tr>
+          </thead>
+          <tbody style="divide-y:var(--border)">
+            ${diffRows || '<tr><td colspan="5" style="padding:16px;color:var(--ink-f)">No differentials generated.</td></tr>'}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+      ${(r.redFlags && r.redFlags.length) || (r.drugWarnings && r.drugWarnings.length) ? `
+      <div class="rsec" style="margin-bottom:0">
+        <div class="rtitle">🚨 Red Flags & Drug Safety</div>
+        ${flagsH}
+        ${drugsH}
+        ${!r.redFlags?.length && !r.drugWarnings?.length ? '<div style="color:var(--ink-f);font-size:13px">None identified.</div>' : ''}
+      </div>` : `
+      <div class="rsec" style="margin-bottom:0">
+        <div class="rtitle">🚨 Red Flags & Drug Safety</div>
+        <div style="color:var(--ink-f);font-size:13px">No red flags or drug warnings identified.</div>
+      </div>`}
+
+      ${r.keyMissingData ? `
+      <div class="rsec" style="margin-bottom:0">
+        <div class="rtitle">🔍 Key Missing Information</div>
+        <div style="font-size:13px;color:var(--ink-m);padding:8px 10px;background:var(--amber-p);border-left:3px solid var(--amber);border-radius:6px">${r.keyMissingData}</div>
+      </div>` : '<div></div>'}
+    </div>
+
+    <div class="rsec">
+      <div class="rtitle">✅ Next Steps</div>
+      <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse">
+          <tbody>${stepsRows || '<tr><td style="padding:12px;color:var(--ink-f)">No next steps generated.</td></tr>'}</tbody>
+        </table>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:20px">
+      <button class="btn-back" style="padding:11px 28px;font-size:14px" onclick="resetAndStart()">← Analyse New Case</button>
+    </div>
+    <div class="foot">
+      Clinical decision-support only · Not a diagnosis · Verify all outputs with a qualified paediatric neurologist
+    </div>`;
+}
+
+function resetAndStart() {
+  Object.keys(D).forEach(k => { if (k !== 'symptoms') D[k] = ''; });
+  D.consciousness = 'Alert';
+  D.tone = 'Normal';
+  D.muscleBulk = 'Normal';
+  D.reflexes = 'Normal';
+  D.ageUnit = 'years';
+  D.durationUnit = 'days';
+  initSymptoms();
+  currentStep = 0;
+  document.getElementById('upload-status').innerHTML = '';
+  seizureDetailContainer = null;
+  symTableBody = null;
+  buildPage();
+}
+</script>
+</body>
+</html>
