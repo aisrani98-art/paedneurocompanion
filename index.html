@@ -466,6 +466,13 @@ async function incrementCaseCount() {
 }
 
 // ── INIT ────────────────────────────────────────────────────────────────────
+// Timeout safety net — never show loading screen for more than 6 seconds
+setTimeout(() => {
+  if (document.getElementById('loading-screen').style.display !== 'none') {
+    showPage('login');
+  }
+}, 6000);
+
 sb.auth.onAuthStateChange(async (event, session) => {
   if (session?.user) {
     currentUser = session.user;
