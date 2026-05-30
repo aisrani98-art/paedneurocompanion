@@ -350,31 +350,41 @@ async function refreshUserProfile() {
 
 async function loadUserProfile(user) {
   const isDeveloper = user.email === DEVELOPER_EMAIL;
-  const { data, error } = await sb.from('users').select('*').eq('id', user.id).single();
-  if (error || !data) {
-    const { data: newProfile } = await sb.from('users').insert({
-      id: user.id,
-      email: user.email,
-      full_name: user.user_metadata?.full_name || '',
-      avatar_url: user.user_metadata?.avatar_url || '',
-      plan: isDeveloper ? 'developer' : 'none',
-      subscription_status: isDeveloper ? 'active' : 'inactive',
-      cases_limit: isDeveloper ? 999999 : 0
-    }).select().single();
-    userProfile = newProfile;
-  } else {
-    // Auto-upgrade developer account if needed
-    if (isDeveloper && (data.plan !== 'developer' || data.subscription_status !== 'active')) {
-      await sb.from('users').update({
+  try {
+    const { data, error } = await sb.from('users').select('*').eq('id', user.id).single();
+    if (error || !data) {
+      const { data: newProfile } = await sb.from('users').insert({
+        id: user.id,
+        email: user.email,
+        full_name: user.user_metadata?.full_name || '',
+        avatar_url: user.user_metadata?.avatar_url || '',
+        plan: isDeveloper ? 'developer' : 'none',
+        subscription_status: isDeveloper ? 'active' : 'inactive',
+        cases_limit: isDeveloper ? 999999 : 0
+      }).select().single();
+      userProfile = newProfile;
+    } else {
+      // Always force developer status for developer email
+      if (isDeveloper) {
+        data.plan = 'developer';
+        data.subscription_status = 'active';
+        data.cases_limit = 999999;
+      }
+      userProfile = data;
+    }
+  } catch(e) {
+    console.error('loadUserProfile error:', e);
+    // Fallback — still grant developer access if email matches
+    if (isDeveloper) {
+      userProfile = {
+        id: user.id,
+        email: user.email,
         plan: 'developer',
         subscription_status: 'active',
-        cases_limit: 999999
-      }).eq('id', user.id);
-      data.plan = 'developer';
-      data.subscription_status = 'active';
-      data.cases_limit = 999999;
+        cases_limit: 999999,
+        cases_used_this_month: 0
+      };
     }
-    userProfile = data;
   }
 }
 
