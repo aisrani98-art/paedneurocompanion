@@ -469,21 +469,33 @@ async function incrementCaseCount() {
 // Timeout safety net — never show loading screen for more than 6 seconds
 setTimeout(() => {
   if (document.getElementById('loading-screen').style.display !== 'none') {
+    console.error('Auth timeout — forcing login page');
     showPage('login');
   }
 }, 6000);
 
 sb.auth.onAuthStateChange(async (event, session) => {
+  console.log('Auth event:', event, 'User:', session?.user?.email);
   if (session?.user) {
     currentUser = session.user;
-    await loadUserProfile(currentUser);
-    await checkMonthlyReset();
-    if (!userProfile || userProfile.subscription_status !== 'active') {
+    console.log('Loading profile for:', currentUser.email);
+    try {
+      await loadUserProfile(currentUser);
+      await checkMonthlyReset();
+      console.log('Profile loaded:', userProfile?.plan, userProfile?.subscription_status);
+      if (!userProfile || userProfile.subscription_status !== 'active') {
+        console.log('No active subscription — showing paywall');
+        showPage('paywall');
+      } else {
+        console.log('Active subscription — showing app');
+        showMainApp();
+      }
+    } catch (err) {
+      console.error('Profile load error:', err);
       showPage('paywall');
-    } else {
-      showMainApp();
     }
   } else {
+    console.log('No session — showing login');
     showPage('login');
   }
 });
