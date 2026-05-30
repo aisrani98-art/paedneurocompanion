@@ -490,16 +490,29 @@ sb.auth.onAuthStateChange(async (event, session) => {
   console.log('Auth event:', event, 'User:', session?.user?.email);
   if (session?.user) {
     currentUser = session.user;
-    console.log('Loading profile for:', currentUser.email);
+    const isDeveloper = currentUser.email === DEVELOPER_EMAIL;
+    // For developer — skip database entirely, grant access immediately
+    if (isDeveloper) {
+      userProfile = {
+        id: currentUser.id,
+        email: currentUser.email,
+        full_name: currentUser.user_metadata?.full_name || 'Developer',
+        avatar_url: currentUser.user_metadata?.avatar_url || '',
+        plan: 'developer',
+        subscription_status: 'active',
+        cases_limit: 999999,
+        cases_used_this_month: 0,
+        billing_period_start: new Date().toISOString()
+      };
+      showMainApp();
+      return;
+    }
     try {
       await loadUserProfile(currentUser);
       await checkMonthlyReset();
-      console.log('Profile loaded:', userProfile?.plan, userProfile?.subscription_status);
       if (!userProfile || userProfile.subscription_status !== 'active') {
-        console.log('No active subscription — showing paywall');
         showPage('paywall');
       } else {
-        console.log('Active subscription — showing app');
         showMainApp();
       }
     } catch (err) {
@@ -507,7 +520,6 @@ sb.auth.onAuthStateChange(async (event, session) => {
       showPage('paywall');
     }
   } else {
-    console.log('No session — showing login');
     showPage('login');
   }
 });
